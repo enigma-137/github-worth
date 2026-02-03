@@ -68,7 +68,7 @@ const AFFORDABILITY_TIERS: AffordabilityTier[] = [
   {
     label: "Vibes & Data",
     emoji: "📱",
-    description: "Enough for snacks, data bundles, and good vibes only",
+    description: "You don't code at all? Well this is enough for snacks, data bundles, and good vibes only",
     minValue: 0,
     maxValue: 50000,
   },
