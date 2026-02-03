@@ -42,7 +42,7 @@ export function GitHubWorthResultCard({ result }: GitHubWorthResultProps) {
         // User cancelled or share failed
       }
     } else {
-      // Fallback to clipboard
+    
       await navigator.clipboard.writeText(`${shareText} ${shareUrl}`)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
@@ -54,10 +54,8 @@ export function GitHubWorthResultCard({ result }: GitHubWorthResultProps) {
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Main Worth Card */}
       <Card className="overflow-hidden border-2 border-primary/20 shadow-xl bg-card">
         <CardContent className="p-0">
-          {/* Header with Avatar */}
           <div className="bg-primary/10 p-6 flex items-center gap-4">
             <div className="relative">
               <Image
@@ -107,8 +105,6 @@ export function GitHubWorthResultCard({ result }: GitHubWorthResultProps) {
               {result.affordabilityTier.description}
             </p>
           </div>
-
-          {/* Hustle Score */}
           <div className="p-6 bg-muted/30 border-b border-border">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium text-muted-foreground">
@@ -129,14 +125,12 @@ export function GitHubWorthResultCard({ result }: GitHubWorthResultProps) {
             </p>
           </div>
 
-          {/* Message */}
           <div className="p-6 bg-secondary/10 border-b border-border">
             <p className="text-center text-lg font-medium text-foreground italic">
               {`"${result.message}"`}
             </p>
           </div>
 
-          {/* Stats Grid */}
           <div className="p-6">
             <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-4">
               Your GitHub Stats
@@ -184,8 +178,6 @@ export function GitHubWorthResultCard({ result }: GitHubWorthResultProps) {
                 }
               />
             </div>
-
-            {/* Languages */}
             {result.stats.languages.length > 0 && (
               <div className="mt-6">
                 <h4 className="text-sm font-medium text-muted-foreground mb-2">
@@ -207,7 +199,6 @@ export function GitHubWorthResultCard({ result }: GitHubWorthResultProps) {
             )}
           </div>
 
-          {/* Share Button */}
           <div className="p-6 bg-muted/30 border-t border-border">
             <Button
               onClick={handleShare}
@@ -230,7 +221,6 @@ export function GitHubWorthResultCard({ result }: GitHubWorthResultProps) {
         </CardContent>
       </Card>
 
-      {/* Score Breakdown */}
       <Card className="border border-border">
         <CardContent className="p-6">
           <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-4">
@@ -261,7 +251,6 @@ export function GitHubWorthResultCard({ result }: GitHubWorthResultProps) {
         </CardContent>
       </Card>
 
-      {/* Disclaimer */}
       <p className="text-center text-xs text-muted-foreground px-4">
         This estimate is based on public GitHub activity and is for fun only.
         Not a real financial valuation.
