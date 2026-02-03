@@ -11,7 +11,7 @@ import {
 
 // Simple in-memory cache
 const cache = new Map<string, { data: GitHubWorthResult; timestamp: number }>()
-const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+const CACHE_DURATION = 5 * 60 * 1000 
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -24,14 +24,13 @@ export async function GET(request: Request) {
     )
   }
 
-  // Check cache
   const cached = cache.get(username.toLowerCase())
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
     return NextResponse.json(cached.data)
   }
 
   try {
-    // Fetch user data
+   
     const userResponse = await fetch(
       `https://api.github.com/users/${username}`,
       {
