@@ -51,14 +51,12 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+
       <div className="relative overflow-hidden pt-16">
-        {/* Background Pattern */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,var(--primary)_0%,transparent_50%)] opacity-10" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,var(--secondary)_0%,transparent_50%)] opacity-10" />
 
         <div className="relative container mx-auto px-4 py-12 md:py-20">
-          {/* Header */}
           <header className="text-center mb-12">
             <div className="inline-flex items-center justify-center gap-3 mb-6">
               <div className="bg-primary/10 p-3 rounded-2xl">
@@ -75,14 +73,12 @@ export default function Home() {
             </p>
           </header>
 
-          {/* Search Form or Result */}
           {!data && !isLoading && !error && (
             <div className="max-w-md mx-auto">
               <GitHubSearchForm onSearch={handleSearch} isLoading={isLoading} />
             </div>
           )}
 
-          {/* Loading State */}
           {isLoading && (
             <div className="max-w-md mx-auto">
               <GitHubSearchForm onSearch={handleSearch} isLoading={isLoading} />
@@ -93,8 +89,6 @@ export default function Home() {
               </div>
             </div>
           )}
-
-          {/* Error State */}
           {error && (
             <div className="max-w-md mx-auto space-y-6">
               <Alert variant="destructive">
@@ -105,7 +99,6 @@ export default function Home() {
             </div>
           )}
 
-          {/* Result */}
           {data && !isLoading && (
             <div className="space-y-8">
               <GitHubWorthResultCard result={data} />
@@ -122,7 +115,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* How It Works Section */}
       {!data && !isLoading && (
         <section className="bg-muted/30 py-16">
           <div className="container mx-auto px-4">
@@ -150,18 +142,17 @@ export default function Home() {
         </section>
       )}
 
-      {/* Footer */}
       <footer className="py-8 border-t border-border">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm text-muted-foreground">
-            Built for fun. Not affiliated with GitHub.{" "}
+            Built for fun.{" "}
             <a
-              href="https://github.com"
+              href="https://x.com/nigmaQX"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
             >
-              Visit GitHub
+              Visit my Twitter
             </a>
           </p>
         </div>
