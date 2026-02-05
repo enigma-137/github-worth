@@ -90,10 +90,13 @@ export async function GET(request: Request) {
        })
     }
     
-    // Update user lastScoredAt
+    // Update user lastScoredAt and hustleScore
     await prisma.user.update({
         where: { id: user.id },
-        data: { lastScoredAt: new Date() }
+        data: { 
+          lastScoredAt: new Date(),
+          hustleScore: score
+        }
     })
 
     const result: GitHubWorthResult = {

@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { ConsentModal } from "@/components/consent-modal"
+import { LeaderboardSection } from "@/components/leaderboard-section"
 import type { GitHubWorthResult } from "@/lib/github-scoring"
 
 const fetcher = (url: string) =>
@@ -201,6 +202,8 @@ export default function Home() {
           </div>
         </section>
       )}
+
+      <LeaderboardSection />
 
       <footer className="py-8 border-t border-border">
         <div className="container mx-auto px-4 text-center">
