@@ -15,6 +15,7 @@ model User {
   name           String?
   bio            String?
   accessToken    String?    // Encrypted
+  hustleScore    Int        @default(0)
   mode           Mode       @default(PUBLIC)
   lastScoredAt   DateTime   @default(now())
   createdAt      DateTime   @default(now())

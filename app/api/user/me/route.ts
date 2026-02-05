@@ -6,7 +6,7 @@ import { fetchPublicRepos, fetchPrivateStats, fetchPublicUser } from "@/lib/gith
 import { calculateHustleScore, scoreToNaira, getAffordabilityTier, getMessage, GitHubWorthResult } from "@/lib/github-scoring"
 
 export async function GET(request: Request) {
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
   const sessionToken = cookieStore.get("session_token")?.value
 
   if (!sessionToken) {

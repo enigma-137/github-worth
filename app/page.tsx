@@ -175,7 +175,7 @@ export default function Home() {
         </div>
       </div>
 
-      {!data && !isLoading && (
+      {!displayData && !isLoading && (
         <section className="bg-muted/30 py-16">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-12">
