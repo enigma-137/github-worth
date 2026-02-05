@@ -9,6 +9,9 @@ export async function GET(request: Request) {
   const state = searchParams.get("state")
   const error = searchParams.get("error")
 
+  console.log("OAuth callback start")
+  console.log("State:", state)
+
   if (error) {
     return NextResponse.redirect(new URL(`/?error=${error}`, request.url))
   }
@@ -17,17 +20,20 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/?error=missing_params", request.url))
   }
 
-  // 1. Verify State
-  const cookieStore = request.headers.get("cookie") || ""
-  // Parse cookies manually or utilize a library if available. 
-  // Next.js 'cookies' helper is better.
-  // We'll use next/headers in a moment, but for now let's assume strict verification isn't blocking us.
-  // Actually, I should use `cookies()` from next/headers to read it.
-  
+  // FIX 1: Proper state parsing
+  const rawState = state
+  const isPrivateMode = rawState.endsWith("_private")
+  const mode = isPrivateMode ? "PRIVATE" : "PUBLIC"
+  const cleanedState = rawState.replace("_private", "").replace("_public", "")
+
+  console.log("Mode:", mode)
+  console.log("Cleaned state:", cleanedState)
+
   // 2. Exchange Code
   const clientId = process.env.GITHUB_CLIENT_ID
   const clientSecret = process.env.GITHUB_CLIENT_SECRET
-  
+  const redirectUri = process.env.GITHUB_REDIRECT_URI || `${process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "http://localhost:3000"}/api/auth/callback`
+
   if (!clientId || !clientSecret) {
     console.error("Missing GitHub Auth Env Vars")
     return NextResponse.redirect(new URL("/?error=config", request.url))
@@ -44,7 +50,7 @@ export async function GET(request: Request) {
         client_id: clientId,
         client_secret: clientSecret,
         code,
-        redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "http://localhost:3000"}/api/auth/callback`,
+        redirect_uri: redirectUri,
       }),
     })
 
@@ -56,16 +62,22 @@ export async function GET(request: Request) {
 
     const accessToken = tokenData.access_token
 
+    // FIX 3: Store granted scopes
+    const scopes = tokenData.scope?.split(",") || []
+    console.log("Granted scopes:", scopes)
+    const hasPrivateAccess = scopes.includes("repo")
+
     // 3. Get User Profile
     const octokit = new Octokit({ auth: accessToken })
     const { data: userProfile } = await octokit.request("GET /user")
 
     // 4. Encrypt Token
     const encryptedToken = encrypt(accessToken)
-    
-    // Determine Mode from state (we appended _private or _public)
-    const isPrivateMode = state.includes("_private")
-    const mode = isPrivateMode ? "PRIVATE" : "PUBLIC"
+
+    // Security: Guard against encryption failure
+    if (!encryptedToken) {
+      throw new Error("Token encryption failed")
+    }
 
     // 5. Upsert User
     const user = await prisma.user.upsert({
@@ -77,6 +89,7 @@ export async function GET(request: Request) {
         bio: userProfile.bio,
         accessToken: encryptedToken,
         mode: mode,
+        grantedScopes: scopes,
         updatedAt: new Date(),
       },
       create: {
@@ -87,12 +100,15 @@ export async function GET(request: Request) {
         bio: userProfile.bio,
         accessToken: encryptedToken,
         mode: mode,
+        grantedScopes: scopes,
       },
     })
 
+    console.log("User ID type:", typeof user.id, user.id)
+
     // 6. Set Session Cookie
-    // We encrypt the DB ID to use as a session token
-    const sessionToken = encrypt(user.id) // Encrypting the Mongo ID
+    // FIX 2: Convert ObjectId to string before encrypting
+    const sessionToken = encrypt(user.id.toString())
 
     const response = NextResponse.redirect(new URL("/", request.url))
     
@@ -101,6 +117,7 @@ export async function GET(request: Request) {
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: "/",
+      sameSite: "lax",
     })
 
     return response

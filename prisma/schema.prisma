@@ -1,6 +1,5 @@
 datasource db {
   provider = "mongodb"
-  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -17,6 +16,7 @@ model User {
   accessToken    String?    // Encrypted
   hustleScore    Int        @default(0)
   mode           Mode       @default(PUBLIC)
+  grantedScopes    String[]   // GitHub OAuth scopes
   lastScoredAt   DateTime   @default(now())
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
