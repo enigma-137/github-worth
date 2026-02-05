@@ -56,7 +56,7 @@ export function LeaderboardSection() {
 
 function LeaderboardList({ type, active }: { type: string, active: boolean }) {
     // Only fetch if active to save bandwidth
-    const { data, isLoading } = useSWR<LeaderboardEntry[]>(
+    const { data, isLoading, error } = useSWR<LeaderboardEntry[]>(
         active ? `/api/leaderboard?type=${type}` : null,
         fetcher
     )
@@ -70,6 +70,11 @@ function LeaderboardList({ type, active }: { type: string, active: boolean }) {
                     {[...Array(5)].map((_, i) => (
                         <div key={i} className="h-16 bg-card rounded-lg animate-pulse" />
                     ))}
+                </div>
+            ) : error ? (
+                <div className="p-8 text-center">
+                    <div className="text-red-500 font-medium mb-2">Failed to load leaderboard</div>
+                    <p className="text-muted-foreground text-sm">Please try again later</p>
                 </div>
             ) : (
                 <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
