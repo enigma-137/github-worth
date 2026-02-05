@@ -17,7 +17,7 @@ export async function GET(request: Request) {
   // Base URL for callback
   // In production, ensure this matches your GitHub App settings
   // defaulting to localhost for dev
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.URL || "http://localhost:3000"
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL 
   const redirectUri = `${baseUrl}/api/auth/callback`
 
   const params = new URLSearchParams({
