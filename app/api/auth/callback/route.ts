@@ -104,8 +104,9 @@ export async function GET(request: Request) {
 
     return response
 
-  } catch (err) {
+  } catch (err: any) {
     console.error("Auth Error:", err)
-    return NextResponse.redirect(new URL("/?error=auth_failed", request.url))
+    const errorMessage = encodeURIComponent(err.message || "Unknown error")
+    return NextResponse.redirect(new URL(`/?error=auth_failed&details=${errorMessage}`, request.url))
   }
 }

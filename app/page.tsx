@@ -1,12 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import useSWR from "swr"
+import { useSearchParams } from "next/navigation"
 import { Github, AlertCircle, Lock, LogOut } from "lucide-react"
 import { GitHubSearchForm } from "@/components/github-search-form"
 import { GitHubWorthResultCard } from "@/components/github-worth-result"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { ConsentModal } from "@/components/consent-modal"
 import { LeaderboardSection } from "@/components/leaderboard-section"
@@ -21,8 +22,11 @@ const fetcher = (url: string) =>
     return res.json()
   })
 
-export default function Home() {
+function HomeContent() {
   const [searchedUsername, setSearchedUsername] = useState<string | null>(null)
+  const searchParams = useSearchParams()
+  const authError = searchParams.get("error")
+  const authErrorDetails = searchParams.get("details")
 
   // Fetch logged in user
   const { data: userData, error: userError, isLoading: userLoading } = useSWR<GitHubWorthResult>(
@@ -115,6 +119,21 @@ export default function Home() {
               </div>
             )}
           </header>
+
+          {/* Global Auth Error Display */}
+          {authError && (
+            <div className="max-w-md mx-auto mb-8 animate-in fade-in slide-in-from-top-4">
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <div className="ml-2">
+                  <AlertTitle>Authentication Failed</AlertTitle>
+                  <AlertDescription>
+                    {authErrorDetails ? decodeURIComponent(authErrorDetails) : "Something went wrong during login. Please try again."}
+                  </AlertDescription>
+                </div>
+              </Alert>
+            </div>
+          )}
 
           {!displayData && !isLoading && !error && (
             <div className="max-w-md mx-auto">
@@ -221,6 +240,14 @@ export default function Home() {
         </div>
       </footer>
     </main>
+  )
+}
+
+export default function Home() {
+  return (
+    <Suspense>
+      <HomeContent />
+    </Suspense>
   )
 }
 
