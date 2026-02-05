@@ -44,6 +44,7 @@ export async function GET(request: Request) {
         client_id: clientId,
         client_secret: clientSecret,
         code,
+        redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "http://localhost:3000"}/api/auth/callback`,
       }),
     })
 
