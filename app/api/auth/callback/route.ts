@@ -1,3 +1,5 @@
+import { Mode } from "@prisma/client"
+
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { encrypt } from "@/lib/encryption"
@@ -23,7 +25,7 @@ export async function GET(request: Request) {
   // FIX 1: Proper state parsing
   const rawState = state
   const isPrivateMode = rawState.endsWith("_private")
-  const mode = isPrivateMode ? "PRIVATE" : "PUBLIC"
+  const mode = isPrivateMode ? Mode.PRIVATE : Mode.PUBLIC
   const cleanedState = rawState.replace("_private", "").replace("_public", "")
 
   console.log("Mode:", mode)
@@ -62,8 +64,10 @@ export async function GET(request: Request) {
 
     const accessToken = tokenData.access_token
 
-    // FIX 3: Store granted scopes
-    const scopes = tokenData.scope?.split(",") || []
+    // FIX: GitHub uses space-separated scopes, not comma-separated
+    const scopes = tokenData.scope 
+      ? tokenData.scope.split(/\s+/).filter(Boolean) 
+      : []
     console.log("Granted scopes:", scopes)
     const hasPrivateAccess = scopes.includes("repo")
 

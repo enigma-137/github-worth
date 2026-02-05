@@ -104,7 +104,7 @@ function HomeContent() {
             {!userData && !isLoading && (
               <div className="mt-6 flex justify-center gap-4">
                 <ConsentModal>
-                  <Button variant="default" size="lg" className="rounded-full shadow-lg hover:shadow-primary/25 transition-all">
+                  <Button disabled variant="default" size="lg" className="rounded-full shadow-lg hover:shadow-primary/25 transition-all">
                     Connect Private Repos (Secret)
                   </Button>
                 </ConsentModal>
