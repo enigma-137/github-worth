@@ -22,6 +22,12 @@ export interface GitHubRepo {
   fork: boolean
 }
 
+export interface PrivateStats {
+  privateRepos: number
+  privateContributions: number
+  createdAt: string // To verify account age consistency
+}
+
 export interface ScoreBreakdown {
   followers: number
   stars: number
@@ -29,6 +35,7 @@ export interface ScoreBreakdown {
   originalRepos: number
   accountAge: number
   languageDiversity: number
+  privateActivity: number // New field
   bonuses: number
   penalties: number
 }
@@ -53,7 +60,10 @@ export interface GitHubWorthResult {
     activeRepos: number
     languages: string[]
     accountAgeDays: number
+    privateRepos?: number // New
+    privateContributions?: number // New
   }
+  isPrivateMode?: boolean
 }
 
 export interface AffordabilityTier {
@@ -125,7 +135,8 @@ const LOW_SCORE_MESSAGES = [
 
 export function calculateHustleScore(
   user: GitHubUser,
-  repos: GitHubRepo[]
+  repos: GitHubRepo[],
+  privateStats?: PrivateStats
 ): { score: number; breakdown: ScoreBreakdown } {
   const now = new Date()
   const createdAt = new Date(user.created_at)
@@ -135,7 +146,6 @@ export function calculateHustleScore(
   // Calculate repo stats
   const originalRepos = repos.filter((r) => !r.fork && !r.archived)
   const totalStars = repos.reduce((sum, r) => sum + r.stargazers_count, 0)
-  const totalForks = repos.reduce((sum, r) => sum + r.forks_count, 0)
   
   // Active repos (updated in last 90 days)
   const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
@@ -144,18 +154,40 @@ export function calculateHustleScore(
   // Language diversity
   const languages = [...new Set(repos.map((r) => r.language).filter(Boolean))]
 
-  // Base Score Components
-  const followerScore = Math.min(user.followers * 5, 2500) // Cap at 500 followers worth
-  const starScore = Math.min(totalStars * 3, 3000) // Cap at 1000 stars worth
-  const activeRepoScore = Math.min(activeRepos.length * 4, 200) // Cap at 50 active repos
-  const originalRepoScore = Math.min(originalRepos.length * 2, 200) // Cap at 100 original repos
-  const accountAgeScore = Math.min(yearsOnGitHub * 10, 100) // Cap at 10 years
-  const languageScore = Math.min(languages.length * 5, 50) // Cap at 10 languages
+  // Public Score Components
+  const followerScore = Math.min(user.followers * 5, 2500) // Cap at 500 followers
+  const starScore = Math.min(totalStars * 3, 3000) // Cap at 1000 stars
+  
+  // Public Active Repos: 4 points each
+  const activeRepoScore = Math.min(activeRepos.length * 4, 300) 
+  
+  // Public Original Repos: 2 points each
+  const originalRepoScore = Math.min(originalRepos.length * 2, 200) 
+  
+  const accountAgeScore = Math.min(yearsOnGitHub * 25, 250) // Increased weight for age
+  const languageScore = Math.min(languages.length * 10, 100) 
+
+  // Private Activity Score (Weighted 50%)
+  let privateActivityScore = 0
+  if (privateStats) {
+      // Private repos worth 2 points each (vs 4 for public active)
+      // We assume private repos are somewhat active if they exist in count, 
+      // but without timestamps we can't be sure, so we lower the weight.
+      const privateRepoPoints = Math.min(privateStats.privateRepos * 2, 400) // Max 200 private repos
+      
+      // Contributions: 0.1 point per contribution?
+      // Typical active dev has ~1000-2000 contribs a year.
+      // 1000 * 0.1 = 100 points.
+      // Cap at 500 points.
+      const contributionPoints = Math.min(privateStats.privateContributions * 0.2, 800)
+      
+      privateActivityScore = privateRepoPoints + contributionPoints
+  }
 
   // Bonuses
   let bonuses = 0
   
-  // Repo updated in last 30 days bonus
+  // Repo updated in last 30 days bonus (Public)
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
   const recentlyActive = repos.some((r) => new Date(r.updated_at) > thirtyDaysAgo)
   if (recentlyActive) bonuses += 50
@@ -172,16 +204,25 @@ export function calculateHustleScore(
   // Penalties
   let penalties = 0
   
-  // No activity in 6+ months
+  // No activity in 6+ months (only check public if private is not present)
+  // If private stats exist and show contributions, ignore this penalty
   const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000)
-  const hasRecentActivity = repos.some((r) => new Date(r.updated_at) > sixMonthsAgo)
-  if (!hasRecentActivity && repos.length > 0) penalties += 100
+  const hasRecentPublicActivity = repos.some((r) => new Date(r.updated_at) > sixMonthsAgo)
+  const hasPrivateActivity = privateStats && privateStats.privateContributions > 10
+  
+  if (!hasRecentPublicActivity && !hasPrivateActivity && repos.length > 0) {
+      penalties += 100
+  }
   
   // Only forked repos
-  if (originalRepos.length === 0 && repos.length > 0) penalties += 150
+  if (originalRepos.length === 0 && repos.length > 0 && (!privateStats || privateStats.privateRepos === 0)) {
+      penalties += 150
+  }
   
-  // Empty profile (no repos)
-  if (repos.length === 0) penalties += 200
+  // Empty profile
+  if (repos.length === 0 && (!privateStats || privateStats.privateRepos === 0)) {
+      penalties += 200
+  }
 
   const breakdown: ScoreBreakdown = {
     followers: followerScore,
@@ -190,6 +231,7 @@ export function calculateHustleScore(
     originalRepos: originalRepoScore,
     accountAge: accountAgeScore,
     languageDiversity: languageScore,
+    privateActivity: privateActivityScore,
     bonuses,
     penalties,
   }
@@ -202,18 +244,22 @@ export function calculateHustleScore(
       originalRepoScore +
       accountAgeScore +
       languageScore +
+      privateActivityScore +
       bonuses -
       penalties
   )
 
-  // Cap the score at 5000 to prevent extreme outputs
-  const cappedScore = Math.min(totalScore, 5000)
+  // Cap the score. Increase cap for private mode users potentially?
+  // Let's keep a unified scale but maybe higher cap.
+  // Old cap was 5000. Let's make it 10000 for power users.
+  const cappedScore = Math.min(totalScore, 10000)
 
   return { score: cappedScore, breakdown }
 }
 
 export function scoreToNaira(score: number): number {
-  const rawValue = score * 1500
+  // Inflation update: multiplier increased
+  const rawValue = score * 2500 
   // Round to nearest 1000
   return Math.round(rawValue / 1000) * 1000
 }

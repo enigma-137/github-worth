@@ -1,0 +1,17 @@
+name: Leaderboard Cron
+
+on:
+  schedule:
+    # Run at 00:00 UTC every day
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  update-leaderboard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Update API
+        run: |
+          curl -X GET ${{ secrets.APP_URL }}/api/cron/update \
+          -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+          --fail
