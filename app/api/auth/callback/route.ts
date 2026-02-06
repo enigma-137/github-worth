@@ -157,7 +157,12 @@ export async function GET(request: Request) {
     console.error("Error stack:", err.stack)
     console.error("Full error:", err)
     
-    // Return error as JSON for debugging (remove in production)
+    // In production, redirect to home with generic error
+    if (process.env.NODE_ENV === "production") {
+      return NextResponse.redirect(new URL("/?error=auth_failed", request.url))
+    }
+    
+    // In development, return detailed error for debugging
     return new NextResponse(
       JSON.stringify({ 
         error: err.message, 
