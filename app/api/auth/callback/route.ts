@@ -32,14 +32,14 @@ export async function GET(request: Request) {
   console.log("Mode:", mode)
   console.log("Cleaned state:", cleanedState)
 
-  // Environment check
+  
   const clientId = process.env.GITHUB_CLIENT_ID
   const clientSecret = process.env.GITHUB_CLIENT_SECRET
   const redirectUri = process.env.GITHUB_REDIRECT_URI || `${process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "http://localhost:3000"}/api/auth/callback`
 
-  console.log("Redirect URI:", redirectUri)
-  console.log("Client ID exists:", !!clientId)
-  console.log("Client Secret exists:", !!clientSecret)
+  // console.log("Redirect URI:", redirectUri)
+  // console.log("Client ID exists:", !!clientId)
+  // console.log("Client Secret exists:", !!clientSecret)
 
   if (!clientId || !clientSecret) {
     console.error("Missing GitHub Auth Env Vars")
@@ -47,7 +47,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    console.log("Step 1: Exchanging code for token...")
+    // console.log("Step 1: Exchanging code for token...")
     const tokenResponse = await fetch("https://github.com/login/oauth/access_token", {
       method: "POST",
       headers: {
@@ -80,7 +80,7 @@ export async function GET(request: Request) {
       : []
     console.log("Granted scopes:", scopes)
 
-    console.log("Step 2: Fetching user profile...")
+    // console.log("Step 2: Fetching user profile...")
     const octokit = new Octokit({ auth: accessToken })
     const { data: userProfile } = await octokit.request("GET /user")
     console.log("User profile:", {
@@ -89,20 +89,20 @@ export async function GET(request: Request) {
       name: userProfile.name
     })
 
-    console.log("Step 3: Encrypting token...")
+    // console.log("Step 3: Encrypting token...")
     const encryptedToken = encrypt(accessToken)
     if (!encryptedToken) {
       throw new Error("Token encryption failed")
     }
-    console.log("Token encrypted successfully")
+    // console.log("Token encrypted successfully")
 
-    console.log("Step 4: Upserting user to database...")
-    console.log("Upsert data:", {
-      githubId: userProfile.id,
-      username: userProfile.login,
-      mode: mode,
-      scopesCount: scopes.length
-    })
+    // console.log("Step 4: Upserting user to database...")
+    // console.log("Upsert data:", {
+    //   githubId: userProfile.id,
+    //   username: userProfile.login,
+    //   mode: mode,
+    //   scopesCount: scopes.length
+    // })
 
     const user = await prisma.user.upsert({
       where: { githubId: userProfile.id },
@@ -128,9 +128,9 @@ export async function GET(request: Request) {
       },
     })
 
-    console.log("User upserted:", user.id)
+    // console.log("User upserted:", user.id)
 
-    console.log("Step 5: Creating session...")
+    // console.log("Step 5: Creating session...")
     const sessionToken = encrypt(user.id.toString())
     if (!sessionToken) {
       throw new Error("Session encryption failed")
@@ -147,7 +147,7 @@ export async function GET(request: Request) {
       sameSite: "lax",
     })
 
-    console.log("=== OAuth callback SUCCESS ===")
+    // console.log("=== OAuth callback SUCCESS ===")
     return response
 
   } catch (err: any) {
