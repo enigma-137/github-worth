@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
-import { decrypt } from "@/lib/encryption"
 import { fetchPublicUser, fetchPublicRepos, fetchPrivateStats } from "@/lib/github-api"
-import { calculateHustleScore, scoreToNaira, getAffordabilityTier, getMessage } from "@/lib/github-scoring"
+import { calculateHustleScore, scoreToNaira, getAffordabilityTier } from "@/lib/github-scoring"
 
 export const maxDuration = 60 // Allow 60 seconds (Vercel limit for hobby/pro usually)
 
@@ -16,7 +15,6 @@ export async function GET(request: Request) {
     const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000)
     
     // Find users who haven't been updated in 24 hours
-    // Limit to 50 to prevent timeouts
     const usersToUpdate = await prisma.user.findMany({
       where: {
         lastScoredAt: { lt: yesterday }
@@ -33,11 +31,11 @@ export async function GET(request: Request) {
             let privateStats = undefined
             if (user.mode === "PRIVATE" && user.accessToken) {
                 try {
-                    const decryptedToken = decrypt(user.accessToken)
-                    privateStats = await fetchPrivateStats(decryptedToken)
+                    // With Supabase, we store the provider token plainly if we choose, 
+                    // or just use what we have.
+                    privateStats = await fetchPrivateStats(user.accessToken)
                 } catch (e) {
                     console.error(`Error processing private stats for ${user.username}:`, e)
-                    // If token invalid, maybe fallback or just ignore private stats this run
                 }
             }
             
@@ -86,7 +84,7 @@ export async function GET(request: Request) {
         }
     }))
     
-    const updatedCount = results.filter((r: any) => r.status === "fulfilled" && r.value.status === "updated").length
+    const updatedCount = results.filter((r: any) => r.status === "fulfilled" && (r as any).value.status === "updated").length
 
     return NextResponse.json({ 
         success: true, 

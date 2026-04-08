@@ -1,19 +1,20 @@
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 generator client {
   provider = "prisma-client-js"
 }
 
 model User {
-  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  id             String     @id
   githubId       Int        @unique
   username       String     @unique
   avatarUrl      String
   name           String?
   bio            String?
-  accessToken    String?    // Encrypted
+  accessToken    String?    // Stored from Supabase provider token
   hustleScore    Int        @default(0)
   mode           Mode       @default(PUBLIC)
   grantedScopes    String[]   // GitHub OAuth scopes
@@ -25,8 +26,8 @@ model User {
 }
 
 model Snapshot {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId         String   @db.ObjectId
+  id             String   @id @default(cuid())
+  userId         String
   user           User     @relation(fields: [userId], references: [id])
   
   score          Int

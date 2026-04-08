@@ -1,61 +1,45 @@
 import { NextResponse } from "next/server"
-import { cookies } from "next/headers"
+import { createClient } from "@/lib/supabase/server"
 import { prisma } from "@/lib/db"
-import { decrypt, encrypt } from "@/lib/encryption"
 import { fetchPublicRepos, fetchPrivateStats, fetchPublicUser } from "@/lib/github-api"
 import { calculateHustleScore, scoreToNaira, getAffordabilityTier, getMessage, GitHubWorthResult } from "@/lib/github-scoring"
 
 export async function GET(request: Request) {
-  const cookieStore = await cookies()
-  const sessionToken = cookieStore.get("session_token")?.value
+  const supabase = await createClient()
+  const { data: { user: authUser }, error: authError } = await supabase.auth.getUser()
 
-  if (!sessionToken) {
+  if (authError || !authUser) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   try {
-    const userId = decrypt(sessionToken)
-    
     const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: { snapshots: { orderBy: { createdAt: 'desc' }, take: 1 } } // Get latest snapshot
+      where: { id: authUser.id },
+      include: { snapshots: { orderBy: { createdAt: 'desc' }, take: 1 } }
     })
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 })
+      return NextResponse.json({ error: "User profile not found" }, { status: 404 })
     }
 
-    // Check if we need to recalculate (e.g., if no snapshot or last one is > 24h old?)
-    // For now, let's always calculate fresh for the user view to ensure "Connect" feels instant.
-    // Or at least if the mode is PRIVATE and we expect private stats.
-    
-    const decryptedToken = user.accessToken ? decrypt(user.accessToken) : null
+    const githubToken = user.accessToken
     
     // FETCH FRESH DATA
-    // We fetch public data again
     const publicUser = await fetchPublicUser(user.username)
     const publicRepos = await fetchPublicRepos(user.username)
     
     let privateStats = undefined
-    if (user.mode === "PRIVATE" && decryptedToken) {
+    if (user.mode === "PRIVATE" && githubToken) {
        try {
-         privateStats = await fetchPrivateStats(decryptedToken)
+         privateStats = await fetchPrivateStats(githubToken)
        } catch (e) {
          console.error("Failed to fetch private stats", e)
-         // Fallback to public only if token fails (e.g. revoked)
        }
     }
 
     const { score, breakdown } = calculateHustleScore(publicUser, publicRepos, privateStats)
     
-    // Create new snapshot if score changed significantly or it's a new day? 
-    // Let's just create a snapshot for every "Check" action by the user themselves, 
-    // but maybe limit frequency? 
-    // The prompt says "Recalculation Timing: Background job... Daily snapshot".
-    // So we shouldn't spam snapshots.
-    // We update the User's lastScoredAt.
-    
-    // Save Snapshot if it's been more than 24h or if it's the first time
+    // Save Snapshot logic
     const lastSnapshot = user.snapshots[0]
     const oneDay = 24 * 60 * 60 * 1000
     const shouldSnapshot = !lastSnapshot || (new Date().getTime() - lastSnapshot.createdAt.getTime() > oneDay)
@@ -64,7 +48,6 @@ export async function GET(request: Request) {
     const affordabilityTier = getAffordabilityTier(nairaValue)
     const message = getMessage(score)
     
-    // Derived stats
     const stats = {
         followers: publicUser.followers,
         totalStars: publicRepos.reduce((acc: number, r: any) => acc + r.stargazers_count, 0),
@@ -84,8 +67,8 @@ export async function GET(request: Request) {
            userId: user.id,
            score,
            nairaValue,
-           breakdown, // Json
-           stats,      // Json
+           breakdown,
+           stats,
          }
        })
     }
