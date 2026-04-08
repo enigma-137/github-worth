@@ -35,9 +35,10 @@ export interface ScoreBreakdown {
   originalRepos: number
   accountAge: number
   languageDiversity: number
-  privateActivity: number // New field
+  privateActivity: number
   bonuses: number
   penalties: number
+  [key: string]: number
 }
 
 export interface GitHubWorthResult {
