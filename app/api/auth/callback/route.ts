@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/?error=missing_params", request.url))
   }
 
-  // Parse state
+
   const rawState = state
   const isPrivateMode = rawState.endsWith("_private")
   const mode = isPrivateMode ? Mode.PRIVATE : Mode.PUBLIC
@@ -96,7 +96,7 @@ export async function GET(request: Request) {
     }
     // console.log("Token encrypted successfully")
 
-    // console.log("Step 4: Upserting user to database...")
+    // console.log("Upserting user to database...")
     // console.log("Upsert data:", {
     //   githubId: userProfile.id,
     //   username: userProfile.login,
@@ -130,7 +130,7 @@ export async function GET(request: Request) {
 
     // console.log("User upserted:", user.id)
 
-    // console.log("Step 5: Creating session...")
+    // console.log(" Creating session...")
     const sessionToken = encrypt(user.id.toString())
     if (!sessionToken) {
       throw new Error("Session encryption failed")
