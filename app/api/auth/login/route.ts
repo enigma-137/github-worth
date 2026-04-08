@@ -11,11 +11,12 @@ export async function GET(request: Request) {
   // Scopes: 'repo' is needed for private statistics. 'read:user' for basic profile.
   const scopes = includePrivate ? "read:user repo" : "read:user"
   const next = searchParams.get('next') ?? '/'
+  const mode = includePrivate ? 'PRIVATE' : 'PUBLIC'
   
   const headerList = await headers()
   const host = headerList.get('host')
   const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https'
-  const redirectTo = `${protocol}://${host}/api/auth/callback?next=${next}`
+  const redirectTo = `${protocol}://${host}/api/auth/callback?next=${next}&mode=${mode}`
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'github',

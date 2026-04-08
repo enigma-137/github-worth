@@ -71,9 +71,18 @@ function HomeContent() {
           </div>
           <div className="flex items-center gap-4">
             {userData && (
-              <div className="hidden md:flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">{userData.username}</span>
-                {userData.isPrivateMode && <Lock className="h-3 w-3" />}
+              <div className="flex items-center gap-3">
+                <div className="hidden md:flex flex-col items-end text-right">
+                  <span className="text-sm font-medium text-foreground">{userData.username}</span>
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                    {userData.isPrivateMode ? "Private Mode" : "Public Mode"}
+                  </span>
+                </div>
+                <form action="/api/auth/logout" method="post">
+                  <Button variant="ghost" size="icon" type="submit" title="Sign Out">
+                    <LogOut className="h-4 w-4" />
+                  </Button>
+                </form>
               </div>
             )}
             <ThemeToggle />
@@ -104,7 +113,7 @@ function HomeContent() {
             {!userData && !isLoading && (
               <div className="mt-6 flex justify-center gap-4">
                 <ConsentModal>
-                  <Button disabled variant="default" size="lg" className="rounded-full shadow-lg hover:shadow-primary/25 transition-all">
+                  <Button variant="default" size="lg" className="rounded-full shadow-lg hover:shadow-primary/25 transition-all">
                     Connect Private Repos (Secret)
                   </Button>
                 </ConsentModal>
@@ -222,7 +231,7 @@ function HomeContent() {
         </section>
       )}
 
-      {/* <LeaderboardSection /> */}
+      <LeaderboardSection />
 
       <footer className="py-8 border-t border-border">
         <div className="container mx-auto px-4 text-center">

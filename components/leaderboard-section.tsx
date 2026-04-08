@@ -78,7 +78,7 @@ function LeaderboardList({ type, active }: { type: string, active: boolean }) {
                 </div>
             ) : (
                 <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-                    {data?.map((user, index) => (
+                    {Array.isArray(data) && data.map((user, index) => (
                         <div key={user.username} className="flex items-center gap-4 p-4 border-b border-border last:border-0 hover:bg-muted/50 transition-colors">
                             <div className="font-mono text-xl font-bold text-muted-foreground w-8 text-center">
                                 {index + 1}

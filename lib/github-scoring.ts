@@ -156,32 +156,29 @@ export function calculateHustleScore(
   const languages = [...new Set(repos.map((r) => r.language).filter(Boolean))]
 
   // Public Score Components
-  const followerScore = Math.min(user.followers * 5, 2500) // Cap at 500 followers
-  const starScore = Math.min(totalStars * 3, 3000) // Cap at 1000 stars
+  const followerScore = user.followers * 5
+  const starScore = totalStars * 3
   
   // Public Active Repos: 4 points each
-  const activeRepoScore = Math.min(activeRepos.length * 4, 300) 
+  const activeRepoScore = activeRepos.length * 4
   
   // Public Original Repos: 2 points each
-  const originalRepoScore = Math.min(originalRepos.length * 2, 200) 
+  const originalRepoScore = originalRepos.length * 2
   
-  const accountAgeScore = Math.min(yearsOnGitHub * 25, 250) // Increased weight for age
-  const languageScore = Math.min(languages.length * 10, 100) 
-
+  const accountAgeScore = yearsOnGitHub * 25
+  const languageScore = languages.length * 10
   // Private Activity Score (Weighted 50%)
   let privateActivityScore = 0
   if (privateStats) {
       // Private repos worth 2 points each (vs 4 for public active)
       // We assume private repos are somewhat active if they exist in count, 
       // but without timestamps we can't be sure, so we lower the weight.
-      const privateRepoPoints = Math.min(privateStats.privateRepos * 2, 400) // Max 200 private repos
+      const privateRepoPoints = privateStats.privateRepos * 2
       
       // Contributions: 0.1 point per contribution?
       // Typical active dev has ~1000-2000 contribs a year.
       // 1000 * 0.1 = 100 points.
-      // Cap at 500 points.
-      const contributionPoints = Math.min(privateStats.privateContributions * 0.2, 800)
-      
+      const contributionPoints = privateStats.privateContributions * 0.2      
       privateActivityScore = privateRepoPoints + contributionPoints
   }
 
@@ -250,12 +247,7 @@ export function calculateHustleScore(
       penalties
   )
 
-  // Cap the score. Increase cap for private mode users potentially?
-  // Let's keep a unified scale but maybe higher cap.
-  // Old cap was 5000. Let's make it 10000 for power users.
-  const cappedScore = Math.min(totalScore, 10000)
-
-  return { score: cappedScore, breakdown }
+  return { score: totalScore, breakdown }
 }
 
 export function scoreToNaira(score: number): number {
