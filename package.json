@@ -1,9 +1,9 @@
 {
-  "name": "GitHub-worth-calculator",
+  "name": "github-worth-calculator",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "prisma generate && next build",
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start",
