@@ -94,7 +94,13 @@ function LeaderboardList({ type, active }: { type: string, active: boolean }) {
                 {Array.isArray(paginatedData) && paginatedData.map((user, index) => {
                     const rank = (currentPage - 1) * ITEMS_PER_PAGE + index + 1
                     return (
-                        <div key={user.username} className={`flex items-center gap-4 p-4 border-b border-border last:border-0 hover:bg-muted/50 transition-colors ${rank <= 3 ? 'bg-muted/30' : ''}`}>
+                        <a 
+                            key={user.username} 
+                            href={`https://github.com/${user.username}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`flex items-center gap-4 p-4 border-b border-border last:border-0 hover:bg-muted/50 transition-colors ${rank <= 3 ? 'bg-muted/30' : ''}`}
+                        >
                             <div className="flex items-center justify-center w-8">
                                 {rank === 1 ? (
                                     <Trophy className="h-6 w-6 text-yellow-500" />
@@ -143,7 +149,7 @@ function LeaderboardList({ type, active }: { type: string, active: boolean }) {
                                     </div>
                                 )}
                             </div>
-                        </div>
+                        </a>
                     )
                 })}
                 {data?.length === 0 && (
