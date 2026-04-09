@@ -10,7 +10,6 @@ export async function GET(request: Request) {
   try {
     if (type === "lifetime") {
       const authenticatedUsers = await prisma.user.findMany({
-        where: { mode: 'PUBLIC' },
         orderBy: { hustleScore: 'desc' },
         take: 50,
         select: {
