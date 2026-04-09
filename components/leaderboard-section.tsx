@@ -57,7 +57,7 @@ export function LeaderboardSection() {
 }
 
 function LeaderboardList({ type, active }: { type: string, active: boolean }) {
-    // Only fetch if active to save bandwidth
+
     const { data, isLoading, error } = useSWR<LeaderboardEntry[]>(
         active ? `/api/leaderboard?type=${type}` : null,
         fetcher
