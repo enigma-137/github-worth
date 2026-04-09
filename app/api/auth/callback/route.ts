@@ -47,29 +47,36 @@ export async function GET(request: Request) {
   try {
     console.log(`Syncing user to DB: ${username} (GitHub ID: ${githubId}, Mode: ${mode})`)
     
-    await prisma.user.upsert({
-      where: { githubId: githubId },
-      update: {
-        id: user.id, // Update to current Supabase ID if it changed
-        username,
-        avatarUrl,
-        name,
-        bio,
-        accessToken,
-        mode,
-        updatedAt: new Date(),
-      },
-      create: {
-        id: user.id,
-        githubId,
-        username,
-        avatarUrl,
-        name,
-        bio,
-        accessToken,
-        mode,
-      },
-    })
+    await prisma.$transaction([
+      // Cleanup guest score if it exists
+      prisma.guestScore.deleteMany({
+        where: { githubId: githubId }
+      }),
+      // Upsert full user
+      prisma.user.upsert({
+        where: { githubId: githubId },
+        update: {
+          id: user.id,
+          username,
+          avatarUrl,
+          name,
+          bio,
+          accessToken,
+          mode,
+          updatedAt: new Date(),
+        },
+        create: {
+          id: user.id,
+          githubId,
+          username,
+          avatarUrl,
+          name,
+          bio,
+          accessToken,
+          mode,
+        },
+      })
+    ])
   } catch (dbError: any) {
     console.error("Database sync error:", dbError.message)
     // Redirect with error details for debugging

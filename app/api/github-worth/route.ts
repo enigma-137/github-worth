@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { prisma } from "@/lib/db"
 import {
   calculateHustleScore,
   scoreToNaira,
@@ -125,6 +126,50 @@ export async function GET(request: Request) {
         languages,
         accountAgeDays,
       },
+    }
+
+    // --- Persist the result ---
+    try {
+      // Check if this user exists in our main User table
+      const existingUser = await prisma.user.findUnique({
+        where: { githubId: user.id },
+        select: { id: true, mode: true }
+      })
+
+      if (existingUser) {
+        // Only update if not in private mode
+        if (existingUser.mode !== "PRIVATE") {
+          await prisma.user.update({
+            where: { id: existingUser.id },
+            data: { 
+              hustleScore: score,
+              lastScoredAt: new Date()
+            }
+          })
+        }
+      } else {
+        // If not a registered user, upsert into GuestScore
+        await prisma.guestScore.upsert({
+          where: { githubId: user.id },
+          create: {
+            githubId: user.id,
+            username: user.login,
+            avatarUrl: user.avatar_url,
+            hustleScore: score,
+            nairaValue,
+          },
+          update: {
+            username: user.login,
+            avatarUrl: user.avatar_url,
+            hustleScore: score,
+            nairaValue,
+            updatedAt: new Date(),
+          }
+        })
+      }
+    } catch (saveError) {
+      console.error("Failed to persist score:", saveError)
+      // We don't fail the request if DB save fails
     }
 
     // Cache the result

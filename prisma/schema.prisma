@@ -1,45 +1,42 @@
-datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
-}
-
 generator client {
   provider      = "prisma-client-js"
   output        = "./generated/client"
   binaryTargets = ["native"]
 }
 
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
 model User {
-  id             String     @id
-  githubId       Int        @unique
-  username       String     @unique
-  avatarUrl      String
-  name           String?
-  bio            String?
-  accessToken    String?    // Stored from Supabase provider token
-  hustleScore    Int        @default(0)
-  mode           Mode       @default(PUBLIC)
-  grantedScopes    String[]   // GitHub OAuth scopes
-  lastScoredAt   DateTime   @default(now())
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  
-  snapshots      Snapshot[]
+  id            String     @id
+  githubId      Int        @unique
+  username      String     @unique
+  avatarUrl     String
+  name          String?
+  bio           String?
+  accessToken   String?
+  hustleScore   Int        @default(0)
+  mode          Mode       @default(PUBLIC)
+  grantedScopes String[]
+  lastScoredAt  DateTime   @default(now())
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  snapshots     Snapshot[]
 }
 
 model Snapshot {
-  id             String   @id @default(cuid())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id])
-  
-  score          Int
-  nairaValue     Int
-  breakdown      Json
-  stats          Json
-  
-  createdAt      DateTime @default(now())
-  
+  id         String   @id @default(cuid())
+  userId     String
+  score      Int
+  nairaValue Int
+  breakdown  Json
+  stats      Json
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+
   @@index([userId, createdAt])
 }
 

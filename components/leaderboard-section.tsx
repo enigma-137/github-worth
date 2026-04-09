@@ -10,7 +10,7 @@ type LeaderboardEntry = {
     username: string
     avatarUrl: string
     hustleScore: number
-    mode: "PUBLIC" | "PRIVATE"
+    mode: "PUBLIC" | "PRIVATE" | "GUEST"
     change?: number
 }
 
@@ -92,7 +92,11 @@ function LeaderboardList({ type, active }: { type: string, active: boolean }) {
                             <div className="flex-1 min-w-0">
                                 <div className="font-semibold truncate">{user.username}</div>
                                 <div className="text-xs text-muted-foreground">
-                                    {user.mode === "PRIVATE" ? "Verified Private" : "Public Profile"}
+                                    {user.mode === "PRIVATE" 
+                                        ? "Verified Private" 
+                                        : user.mode === "GUEST" 
+                                            ? "Guest Search" 
+                                            : "Public Profile"}
                                 </div>
                             </div>
                             <div className="text-right">

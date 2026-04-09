@@ -9,7 +9,8 @@ export async function GET(request: Request) {
   
   try {
     if (type === "lifetime") {
-      const users = await prisma.user.findMany({
+      const authenticatedUsers = await prisma.user.findMany({
+        where: { mode: 'PUBLIC' },
         orderBy: { hustleScore: 'desc' },
         take: 50,
         select: {
@@ -19,11 +20,36 @@ export async function GET(request: Request) {
           mode: true,
         }
       })
+
+      const guestUsers = await prisma.guestScore.findMany({
+        orderBy: { hustleScore: 'desc' },
+        take: 50,
+        select: {
+          username: true,
+          avatarUrl: true,
+          hustleScore: true,
+        }
+      })
       
-      return NextResponse.json(users.map((u: any) => ({
-          ...u,
-          change: 0 // Lifetime doesn't show change, or we could calculate if needed
-      })))
+      // Combine and mark guests
+      const combined = [
+        ...authenticatedUsers.map((u: any) => ({ ...u, change: 0 })),
+        ...guestUsers.map((u: any) => ({ 
+           ...u, 
+           mode: 'GUEST', // Virtual mode for frontend
+           change: 0 
+        }))
+      ]
+
+      // Sort by score and take top 50, ensuring no duplicate usernames
+      // (The githworth logic should prevent most, but this is a safety net)
+      const ranked = Array.from(
+        new Map(combined.map((u: any) => [u.username.toLowerCase(), u])).values()
+      )
+      .sort((a: any, b: any) => b.hustleScore - a.hustleScore)
+      .slice(0, 50)
+      
+      return NextResponse.json(ranked)
     } 
     
     // Growth Leaderboards
