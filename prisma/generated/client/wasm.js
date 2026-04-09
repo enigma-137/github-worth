@@ -148,6 +148,17 @@ exports.Prisma.SnapshotScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.GuestScoreScalarFieldEnum = {
+  id: 'id',
+  githubId: 'githubId',
+  username: 'username',
+  avatarUrl: 'avatarUrl',
+  hustleScore: 'hustleScore',
+  nairaValue: 'nairaValue',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -179,7 +190,8 @@ exports.Mode = exports.$Enums.Mode = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Snapshot: 'Snapshot'
+  Snapshot: 'Snapshot',
+  GuestScore: 'GuestScore'
 };
 
 /**

@@ -23,6 +23,11 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  * 
  */
 export type Snapshot = $Result.DefaultSelection<Prisma.$SnapshotPayload>
+/**
+ * Model GuestScore
+ * 
+ */
+export type GuestScore = $Result.DefaultSelection<Prisma.$GuestScorePayload>
 
 /**
  * Enums
@@ -183,6 +188,16 @@ export class PrismaClient<
     * ```
     */
   get snapshot(): Prisma.SnapshotDelegate<ExtArgs>;
+
+  /**
+   * `prisma.guestScore`: Exposes CRUD operations for the **GuestScore** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GuestScores
+    * const guestScores = await prisma.guestScore.findMany()
+    * ```
+    */
+  get guestScore(): Prisma.GuestScoreDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -625,7 +640,8 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
-    Snapshot: 'Snapshot'
+    Snapshot: 'Snapshot',
+    GuestScore: 'GuestScore'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -641,7 +657,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "user" | "snapshot"
+      modelProps: "user" | "snapshot" | "guestScore"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -782,6 +798,76 @@ export namespace Prisma {
           count: {
             args: Prisma.SnapshotCountArgs<ExtArgs>
             result: $Utils.Optional<SnapshotCountAggregateOutputType> | number
+          }
+        }
+      }
+      GuestScore: {
+        payload: Prisma.$GuestScorePayload<ExtArgs>
+        fields: Prisma.GuestScoreFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GuestScoreFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestScorePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GuestScoreFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestScorePayload>
+          }
+          findFirst: {
+            args: Prisma.GuestScoreFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestScorePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GuestScoreFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestScorePayload>
+          }
+          findMany: {
+            args: Prisma.GuestScoreFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestScorePayload>[]
+          }
+          create: {
+            args: Prisma.GuestScoreCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestScorePayload>
+          }
+          createMany: {
+            args: Prisma.GuestScoreCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GuestScoreCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestScorePayload>[]
+          }
+          delete: {
+            args: Prisma.GuestScoreDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestScorePayload>
+          }
+          update: {
+            args: Prisma.GuestScoreUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestScorePayload>
+          }
+          deleteMany: {
+            args: Prisma.GuestScoreDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GuestScoreUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.GuestScoreUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GuestScorePayload>
+          }
+          aggregate: {
+            args: Prisma.GuestScoreAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGuestScore>
+          }
+          groupBy: {
+            args: Prisma.GuestScoreGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GuestScoreGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GuestScoreCountArgs<ExtArgs>
+            result: $Utils.Optional<GuestScoreCountAggregateOutputType> | number
           }
         }
       }
@@ -3042,6 +3128,962 @@ export namespace Prisma {
 
 
   /**
+   * Model GuestScore
+   */
+
+  export type AggregateGuestScore = {
+    _count: GuestScoreCountAggregateOutputType | null
+    _avg: GuestScoreAvgAggregateOutputType | null
+    _sum: GuestScoreSumAggregateOutputType | null
+    _min: GuestScoreMinAggregateOutputType | null
+    _max: GuestScoreMaxAggregateOutputType | null
+  }
+
+  export type GuestScoreAvgAggregateOutputType = {
+    githubId: number | null
+    hustleScore: number | null
+    nairaValue: number | null
+  }
+
+  export type GuestScoreSumAggregateOutputType = {
+    githubId: number | null
+    hustleScore: number | null
+    nairaValue: number | null
+  }
+
+  export type GuestScoreMinAggregateOutputType = {
+    id: string | null
+    githubId: number | null
+    username: string | null
+    avatarUrl: string | null
+    hustleScore: number | null
+    nairaValue: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GuestScoreMaxAggregateOutputType = {
+    id: string | null
+    githubId: number | null
+    username: string | null
+    avatarUrl: string | null
+    hustleScore: number | null
+    nairaValue: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GuestScoreCountAggregateOutputType = {
+    id: number
+    githubId: number
+    username: number
+    avatarUrl: number
+    hustleScore: number
+    nairaValue: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type GuestScoreAvgAggregateInputType = {
+    githubId?: true
+    hustleScore?: true
+    nairaValue?: true
+  }
+
+  export type GuestScoreSumAggregateInputType = {
+    githubId?: true
+    hustleScore?: true
+    nairaValue?: true
+  }
+
+  export type GuestScoreMinAggregateInputType = {
+    id?: true
+    githubId?: true
+    username?: true
+    avatarUrl?: true
+    hustleScore?: true
+    nairaValue?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GuestScoreMaxAggregateInputType = {
+    id?: true
+    githubId?: true
+    username?: true
+    avatarUrl?: true
+    hustleScore?: true
+    nairaValue?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GuestScoreCountAggregateInputType = {
+    id?: true
+    githubId?: true
+    username?: true
+    avatarUrl?: true
+    hustleScore?: true
+    nairaValue?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type GuestScoreAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GuestScore to aggregate.
+     */
+    where?: GuestScoreWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GuestScores to fetch.
+     */
+    orderBy?: GuestScoreOrderByWithRelationInput | GuestScoreOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GuestScoreWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GuestScores from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GuestScores.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GuestScores
+    **/
+    _count?: true | GuestScoreCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: GuestScoreAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: GuestScoreSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GuestScoreMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GuestScoreMaxAggregateInputType
+  }
+
+  export type GetGuestScoreAggregateType<T extends GuestScoreAggregateArgs> = {
+        [P in keyof T & keyof AggregateGuestScore]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGuestScore[P]>
+      : GetScalarType<T[P], AggregateGuestScore[P]>
+  }
+
+
+
+
+  export type GuestScoreGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GuestScoreWhereInput
+    orderBy?: GuestScoreOrderByWithAggregationInput | GuestScoreOrderByWithAggregationInput[]
+    by: GuestScoreScalarFieldEnum[] | GuestScoreScalarFieldEnum
+    having?: GuestScoreScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GuestScoreCountAggregateInputType | true
+    _avg?: GuestScoreAvgAggregateInputType
+    _sum?: GuestScoreSumAggregateInputType
+    _min?: GuestScoreMinAggregateInputType
+    _max?: GuestScoreMaxAggregateInputType
+  }
+
+  export type GuestScoreGroupByOutputType = {
+    id: string
+    githubId: number
+    username: string
+    avatarUrl: string
+    hustleScore: number
+    nairaValue: number
+    createdAt: Date
+    updatedAt: Date
+    _count: GuestScoreCountAggregateOutputType | null
+    _avg: GuestScoreAvgAggregateOutputType | null
+    _sum: GuestScoreSumAggregateOutputType | null
+    _min: GuestScoreMinAggregateOutputType | null
+    _max: GuestScoreMaxAggregateOutputType | null
+  }
+
+  type GetGuestScoreGroupByPayload<T extends GuestScoreGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GuestScoreGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GuestScoreGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GuestScoreGroupByOutputType[P]>
+            : GetScalarType<T[P], GuestScoreGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GuestScoreSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    githubId?: boolean
+    username?: boolean
+    avatarUrl?: boolean
+    hustleScore?: boolean
+    nairaValue?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["guestScore"]>
+
+  export type GuestScoreSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    githubId?: boolean
+    username?: boolean
+    avatarUrl?: boolean
+    hustleScore?: boolean
+    nairaValue?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["guestScore"]>
+
+  export type GuestScoreSelectScalar = {
+    id?: boolean
+    githubId?: boolean
+    username?: boolean
+    avatarUrl?: boolean
+    hustleScore?: boolean
+    nairaValue?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+
+  export type $GuestScorePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GuestScore"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      githubId: number
+      username: string
+      avatarUrl: string
+      hustleScore: number
+      nairaValue: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["guestScore"]>
+    composites: {}
+  }
+
+  type GuestScoreGetPayload<S extends boolean | null | undefined | GuestScoreDefaultArgs> = $Result.GetResult<Prisma.$GuestScorePayload, S>
+
+  type GuestScoreCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<GuestScoreFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: GuestScoreCountAggregateInputType | true
+    }
+
+  export interface GuestScoreDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GuestScore'], meta: { name: 'GuestScore' } }
+    /**
+     * Find zero or one GuestScore that matches the filter.
+     * @param {GuestScoreFindUniqueArgs} args - Arguments to find a GuestScore
+     * @example
+     * // Get one GuestScore
+     * const guestScore = await prisma.guestScore.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GuestScoreFindUniqueArgs>(args: SelectSubset<T, GuestScoreFindUniqueArgs<ExtArgs>>): Prisma__GuestScoreClient<$Result.GetResult<Prisma.$GuestScorePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one GuestScore that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {GuestScoreFindUniqueOrThrowArgs} args - Arguments to find a GuestScore
+     * @example
+     * // Get one GuestScore
+     * const guestScore = await prisma.guestScore.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GuestScoreFindUniqueOrThrowArgs>(args: SelectSubset<T, GuestScoreFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GuestScoreClient<$Result.GetResult<Prisma.$GuestScorePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first GuestScore that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GuestScoreFindFirstArgs} args - Arguments to find a GuestScore
+     * @example
+     * // Get one GuestScore
+     * const guestScore = await prisma.guestScore.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GuestScoreFindFirstArgs>(args?: SelectSubset<T, GuestScoreFindFirstArgs<ExtArgs>>): Prisma__GuestScoreClient<$Result.GetResult<Prisma.$GuestScorePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first GuestScore that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GuestScoreFindFirstOrThrowArgs} args - Arguments to find a GuestScore
+     * @example
+     * // Get one GuestScore
+     * const guestScore = await prisma.guestScore.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GuestScoreFindFirstOrThrowArgs>(args?: SelectSubset<T, GuestScoreFindFirstOrThrowArgs<ExtArgs>>): Prisma__GuestScoreClient<$Result.GetResult<Prisma.$GuestScorePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more GuestScores that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GuestScoreFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GuestScores
+     * const guestScores = await prisma.guestScore.findMany()
+     * 
+     * // Get first 10 GuestScores
+     * const guestScores = await prisma.guestScore.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const guestScoreWithIdOnly = await prisma.guestScore.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GuestScoreFindManyArgs>(args?: SelectSubset<T, GuestScoreFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GuestScorePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a GuestScore.
+     * @param {GuestScoreCreateArgs} args - Arguments to create a GuestScore.
+     * @example
+     * // Create one GuestScore
+     * const GuestScore = await prisma.guestScore.create({
+     *   data: {
+     *     // ... data to create a GuestScore
+     *   }
+     * })
+     * 
+     */
+    create<T extends GuestScoreCreateArgs>(args: SelectSubset<T, GuestScoreCreateArgs<ExtArgs>>): Prisma__GuestScoreClient<$Result.GetResult<Prisma.$GuestScorePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many GuestScores.
+     * @param {GuestScoreCreateManyArgs} args - Arguments to create many GuestScores.
+     * @example
+     * // Create many GuestScores
+     * const guestScore = await prisma.guestScore.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GuestScoreCreateManyArgs>(args?: SelectSubset<T, GuestScoreCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GuestScores and returns the data saved in the database.
+     * @param {GuestScoreCreateManyAndReturnArgs} args - Arguments to create many GuestScores.
+     * @example
+     * // Create many GuestScores
+     * const guestScore = await prisma.guestScore.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GuestScores and only return the `id`
+     * const guestScoreWithIdOnly = await prisma.guestScore.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GuestScoreCreateManyAndReturnArgs>(args?: SelectSubset<T, GuestScoreCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GuestScorePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a GuestScore.
+     * @param {GuestScoreDeleteArgs} args - Arguments to delete one GuestScore.
+     * @example
+     * // Delete one GuestScore
+     * const GuestScore = await prisma.guestScore.delete({
+     *   where: {
+     *     // ... filter to delete one GuestScore
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GuestScoreDeleteArgs>(args: SelectSubset<T, GuestScoreDeleteArgs<ExtArgs>>): Prisma__GuestScoreClient<$Result.GetResult<Prisma.$GuestScorePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one GuestScore.
+     * @param {GuestScoreUpdateArgs} args - Arguments to update one GuestScore.
+     * @example
+     * // Update one GuestScore
+     * const guestScore = await prisma.guestScore.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GuestScoreUpdateArgs>(args: SelectSubset<T, GuestScoreUpdateArgs<ExtArgs>>): Prisma__GuestScoreClient<$Result.GetResult<Prisma.$GuestScorePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more GuestScores.
+     * @param {GuestScoreDeleteManyArgs} args - Arguments to filter GuestScores to delete.
+     * @example
+     * // Delete a few GuestScores
+     * const { count } = await prisma.guestScore.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GuestScoreDeleteManyArgs>(args?: SelectSubset<T, GuestScoreDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GuestScores.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GuestScoreUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GuestScores
+     * const guestScore = await prisma.guestScore.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GuestScoreUpdateManyArgs>(args: SelectSubset<T, GuestScoreUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one GuestScore.
+     * @param {GuestScoreUpsertArgs} args - Arguments to update or create a GuestScore.
+     * @example
+     * // Update or create a GuestScore
+     * const guestScore = await prisma.guestScore.upsert({
+     *   create: {
+     *     // ... data to create a GuestScore
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GuestScore we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GuestScoreUpsertArgs>(args: SelectSubset<T, GuestScoreUpsertArgs<ExtArgs>>): Prisma__GuestScoreClient<$Result.GetResult<Prisma.$GuestScorePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of GuestScores.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GuestScoreCountArgs} args - Arguments to filter GuestScores to count.
+     * @example
+     * // Count the number of GuestScores
+     * const count = await prisma.guestScore.count({
+     *   where: {
+     *     // ... the filter for the GuestScores we want to count
+     *   }
+     * })
+    **/
+    count<T extends GuestScoreCountArgs>(
+      args?: Subset<T, GuestScoreCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GuestScoreCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GuestScore.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GuestScoreAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GuestScoreAggregateArgs>(args: Subset<T, GuestScoreAggregateArgs>): Prisma.PrismaPromise<GetGuestScoreAggregateType<T>>
+
+    /**
+     * Group by GuestScore.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GuestScoreGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GuestScoreGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GuestScoreGroupByArgs['orderBy'] }
+        : { orderBy?: GuestScoreGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GuestScoreGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGuestScoreGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GuestScore model
+   */
+  readonly fields: GuestScoreFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GuestScore.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GuestScoreClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GuestScore model
+   */ 
+  interface GuestScoreFieldRefs {
+    readonly id: FieldRef<"GuestScore", 'String'>
+    readonly githubId: FieldRef<"GuestScore", 'Int'>
+    readonly username: FieldRef<"GuestScore", 'String'>
+    readonly avatarUrl: FieldRef<"GuestScore", 'String'>
+    readonly hustleScore: FieldRef<"GuestScore", 'Int'>
+    readonly nairaValue: FieldRef<"GuestScore", 'Int'>
+    readonly createdAt: FieldRef<"GuestScore", 'DateTime'>
+    readonly updatedAt: FieldRef<"GuestScore", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GuestScore findUnique
+   */
+  export type GuestScoreFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestScore
+     */
+    select?: GuestScoreSelect<ExtArgs> | null
+    /**
+     * Filter, which GuestScore to fetch.
+     */
+    where: GuestScoreWhereUniqueInput
+  }
+
+  /**
+   * GuestScore findUniqueOrThrow
+   */
+  export type GuestScoreFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestScore
+     */
+    select?: GuestScoreSelect<ExtArgs> | null
+    /**
+     * Filter, which GuestScore to fetch.
+     */
+    where: GuestScoreWhereUniqueInput
+  }
+
+  /**
+   * GuestScore findFirst
+   */
+  export type GuestScoreFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestScore
+     */
+    select?: GuestScoreSelect<ExtArgs> | null
+    /**
+     * Filter, which GuestScore to fetch.
+     */
+    where?: GuestScoreWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GuestScores to fetch.
+     */
+    orderBy?: GuestScoreOrderByWithRelationInput | GuestScoreOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GuestScores.
+     */
+    cursor?: GuestScoreWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GuestScores from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GuestScores.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GuestScores.
+     */
+    distinct?: GuestScoreScalarFieldEnum | GuestScoreScalarFieldEnum[]
+  }
+
+  /**
+   * GuestScore findFirstOrThrow
+   */
+  export type GuestScoreFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestScore
+     */
+    select?: GuestScoreSelect<ExtArgs> | null
+    /**
+     * Filter, which GuestScore to fetch.
+     */
+    where?: GuestScoreWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GuestScores to fetch.
+     */
+    orderBy?: GuestScoreOrderByWithRelationInput | GuestScoreOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GuestScores.
+     */
+    cursor?: GuestScoreWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GuestScores from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GuestScores.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GuestScores.
+     */
+    distinct?: GuestScoreScalarFieldEnum | GuestScoreScalarFieldEnum[]
+  }
+
+  /**
+   * GuestScore findMany
+   */
+  export type GuestScoreFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestScore
+     */
+    select?: GuestScoreSelect<ExtArgs> | null
+    /**
+     * Filter, which GuestScores to fetch.
+     */
+    where?: GuestScoreWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GuestScores to fetch.
+     */
+    orderBy?: GuestScoreOrderByWithRelationInput | GuestScoreOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GuestScores.
+     */
+    cursor?: GuestScoreWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GuestScores from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GuestScores.
+     */
+    skip?: number
+    distinct?: GuestScoreScalarFieldEnum | GuestScoreScalarFieldEnum[]
+  }
+
+  /**
+   * GuestScore create
+   */
+  export type GuestScoreCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestScore
+     */
+    select?: GuestScoreSelect<ExtArgs> | null
+    /**
+     * The data needed to create a GuestScore.
+     */
+    data: XOR<GuestScoreCreateInput, GuestScoreUncheckedCreateInput>
+  }
+
+  /**
+   * GuestScore createMany
+   */
+  export type GuestScoreCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GuestScores.
+     */
+    data: GuestScoreCreateManyInput | GuestScoreCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GuestScore createManyAndReturn
+   */
+  export type GuestScoreCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestScore
+     */
+    select?: GuestScoreSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many GuestScores.
+     */
+    data: GuestScoreCreateManyInput | GuestScoreCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GuestScore update
+   */
+  export type GuestScoreUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestScore
+     */
+    select?: GuestScoreSelect<ExtArgs> | null
+    /**
+     * The data needed to update a GuestScore.
+     */
+    data: XOR<GuestScoreUpdateInput, GuestScoreUncheckedUpdateInput>
+    /**
+     * Choose, which GuestScore to update.
+     */
+    where: GuestScoreWhereUniqueInput
+  }
+
+  /**
+   * GuestScore updateMany
+   */
+  export type GuestScoreUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GuestScores.
+     */
+    data: XOR<GuestScoreUpdateManyMutationInput, GuestScoreUncheckedUpdateManyInput>
+    /**
+     * Filter which GuestScores to update
+     */
+    where?: GuestScoreWhereInput
+  }
+
+  /**
+   * GuestScore upsert
+   */
+  export type GuestScoreUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestScore
+     */
+    select?: GuestScoreSelect<ExtArgs> | null
+    /**
+     * The filter to search for the GuestScore to update in case it exists.
+     */
+    where: GuestScoreWhereUniqueInput
+    /**
+     * In case the GuestScore found by the `where` argument doesn't exist, create a new GuestScore with this data.
+     */
+    create: XOR<GuestScoreCreateInput, GuestScoreUncheckedCreateInput>
+    /**
+     * In case the GuestScore was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GuestScoreUpdateInput, GuestScoreUncheckedUpdateInput>
+  }
+
+  /**
+   * GuestScore delete
+   */
+  export type GuestScoreDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestScore
+     */
+    select?: GuestScoreSelect<ExtArgs> | null
+    /**
+     * Filter which GuestScore to delete.
+     */
+    where: GuestScoreWhereUniqueInput
+  }
+
+  /**
+   * GuestScore deleteMany
+   */
+  export type GuestScoreDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GuestScores to delete
+     */
+    where?: GuestScoreWhereInput
+  }
+
+  /**
+   * GuestScore without action
+   */
+  export type GuestScoreDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GuestScore
+     */
+    select?: GuestScoreSelect<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -3085,6 +4127,20 @@ export namespace Prisma {
   };
 
   export type SnapshotScalarFieldEnum = (typeof SnapshotScalarFieldEnum)[keyof typeof SnapshotScalarFieldEnum]
+
+
+  export const GuestScoreScalarFieldEnum: {
+    id: 'id',
+    githubId: 'githubId',
+    username: 'username',
+    avatarUrl: 'avatarUrl',
+    hustleScore: 'hustleScore',
+    nairaValue: 'nairaValue',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type GuestScoreScalarFieldEnum = (typeof GuestScoreScalarFieldEnum)[keyof typeof GuestScoreScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -3376,6 +4432,75 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Snapshot"> | Date | string
   }
 
+  export type GuestScoreWhereInput = {
+    AND?: GuestScoreWhereInput | GuestScoreWhereInput[]
+    OR?: GuestScoreWhereInput[]
+    NOT?: GuestScoreWhereInput | GuestScoreWhereInput[]
+    id?: StringFilter<"GuestScore"> | string
+    githubId?: IntFilter<"GuestScore"> | number
+    username?: StringFilter<"GuestScore"> | string
+    avatarUrl?: StringFilter<"GuestScore"> | string
+    hustleScore?: IntFilter<"GuestScore"> | number
+    nairaValue?: IntFilter<"GuestScore"> | number
+    createdAt?: DateTimeFilter<"GuestScore"> | Date | string
+    updatedAt?: DateTimeFilter<"GuestScore"> | Date | string
+  }
+
+  export type GuestScoreOrderByWithRelationInput = {
+    id?: SortOrder
+    githubId?: SortOrder
+    username?: SortOrder
+    avatarUrl?: SortOrder
+    hustleScore?: SortOrder
+    nairaValue?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GuestScoreWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    githubId?: number
+    username?: string
+    AND?: GuestScoreWhereInput | GuestScoreWhereInput[]
+    OR?: GuestScoreWhereInput[]
+    NOT?: GuestScoreWhereInput | GuestScoreWhereInput[]
+    avatarUrl?: StringFilter<"GuestScore"> | string
+    hustleScore?: IntFilter<"GuestScore"> | number
+    nairaValue?: IntFilter<"GuestScore"> | number
+    createdAt?: DateTimeFilter<"GuestScore"> | Date | string
+    updatedAt?: DateTimeFilter<"GuestScore"> | Date | string
+  }, "id" | "githubId" | "username">
+
+  export type GuestScoreOrderByWithAggregationInput = {
+    id?: SortOrder
+    githubId?: SortOrder
+    username?: SortOrder
+    avatarUrl?: SortOrder
+    hustleScore?: SortOrder
+    nairaValue?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: GuestScoreCountOrderByAggregateInput
+    _avg?: GuestScoreAvgOrderByAggregateInput
+    _max?: GuestScoreMaxOrderByAggregateInput
+    _min?: GuestScoreMinOrderByAggregateInput
+    _sum?: GuestScoreSumOrderByAggregateInput
+  }
+
+  export type GuestScoreScalarWhereWithAggregatesInput = {
+    AND?: GuestScoreScalarWhereWithAggregatesInput | GuestScoreScalarWhereWithAggregatesInput[]
+    OR?: GuestScoreScalarWhereWithAggregatesInput[]
+    NOT?: GuestScoreScalarWhereWithAggregatesInput | GuestScoreScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GuestScore"> | string
+    githubId?: IntWithAggregatesFilter<"GuestScore"> | number
+    username?: StringWithAggregatesFilter<"GuestScore"> | string
+    avatarUrl?: StringWithAggregatesFilter<"GuestScore"> | string
+    hustleScore?: IntWithAggregatesFilter<"GuestScore"> | number
+    nairaValue?: IntWithAggregatesFilter<"GuestScore"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"GuestScore"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"GuestScore"> | Date | string
+  }
+
   export type UserCreateInput = {
     id: string
     githubId: number
@@ -3559,6 +4684,83 @@ export namespace Prisma {
     breakdown?: JsonNullValueInput | InputJsonValue
     stats?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GuestScoreCreateInput = {
+    id?: string
+    githubId: number
+    username: string
+    avatarUrl: string
+    hustleScore: number
+    nairaValue: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GuestScoreUncheckedCreateInput = {
+    id?: string
+    githubId: number
+    username: string
+    avatarUrl: string
+    hustleScore: number
+    nairaValue: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GuestScoreUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    githubId?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
+    hustleScore?: IntFieldUpdateOperationsInput | number
+    nairaValue?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GuestScoreUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    githubId?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
+    hustleScore?: IntFieldUpdateOperationsInput | number
+    nairaValue?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GuestScoreCreateManyInput = {
+    id?: string
+    githubId: number
+    username: string
+    avatarUrl: string
+    hustleScore: number
+    nairaValue: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GuestScoreUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    githubId?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
+    hustleScore?: IntFieldUpdateOperationsInput | number
+    nairaValue?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GuestScoreUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    githubId?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
+    hustleScore?: IntFieldUpdateOperationsInput | number
+    nairaValue?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -3861,6 +5063,51 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedJsonFilter<$PrismaModel>
     _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type GuestScoreCountOrderByAggregateInput = {
+    id?: SortOrder
+    githubId?: SortOrder
+    username?: SortOrder
+    avatarUrl?: SortOrder
+    hustleScore?: SortOrder
+    nairaValue?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GuestScoreAvgOrderByAggregateInput = {
+    githubId?: SortOrder
+    hustleScore?: SortOrder
+    nairaValue?: SortOrder
+  }
+
+  export type GuestScoreMaxOrderByAggregateInput = {
+    id?: SortOrder
+    githubId?: SortOrder
+    username?: SortOrder
+    avatarUrl?: SortOrder
+    hustleScore?: SortOrder
+    nairaValue?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GuestScoreMinOrderByAggregateInput = {
+    id?: SortOrder
+    githubId?: SortOrder
+    username?: SortOrder
+    avatarUrl?: SortOrder
+    hustleScore?: SortOrder
+    nairaValue?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GuestScoreSumOrderByAggregateInput = {
+    githubId?: SortOrder
+    hustleScore?: SortOrder
+    nairaValue?: SortOrder
   }
 
   export type UserCreategrantedScopesInput = {
@@ -4317,6 +5564,10 @@ export namespace Prisma {
      * @deprecated Use SnapshotDefaultArgs instead
      */
     export type SnapshotArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = SnapshotDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use GuestScoreDefaultArgs instead
+     */
+    export type GuestScoreArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = GuestScoreDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

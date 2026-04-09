@@ -40,6 +40,17 @@ model Snapshot {
   @@index([userId, createdAt])
 }
 
+model GuestScore {
+  id          String   @id @default(cuid())
+  githubId    Int      @unique
+  username    String   @unique
+  avatarUrl   String
+  hustleScore Int
+  nairaValue  Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 enum Mode {
   PUBLIC
   PRIVATE

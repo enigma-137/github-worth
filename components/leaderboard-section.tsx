@@ -67,11 +67,11 @@ function LeaderboardList({ type, active }: { type: string, active: boolean }) {
     const [currentPage, setCurrentPage] = useState(1)
     const ITEMS_PER_PAGE = 10
 
-    const totalPages = data ? Math.ceil(data.length / ITEMS_PER_PAGE) : 0
-    const paginatedData = data?.slice(
+    const totalPages = Array.isArray(data) ? Math.ceil(data.length / ITEMS_PER_PAGE) : 0
+    const paginatedData = Array.isArray(data) ? data.slice(
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
-    )
+    ) : []
 
     if (!active) return <TabsContent value={type} />
 
