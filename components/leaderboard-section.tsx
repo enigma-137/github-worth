@@ -4,7 +4,8 @@ import { useState } from "react"
 import useSWR from "swr"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { TrendingUp, Trophy, Calendar } from "lucide-react"
+import { TrendingUp, Trophy, Calendar, Medal, ChevronLeft, ChevronRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 type LeaderboardEntry = {
     username: string
@@ -63,6 +64,15 @@ function LeaderboardList({ type, active }: { type: string, active: boolean }) {
         fetcher
     )
 
+    const [currentPage, setCurrentPage] = useState(1)
+    const ITEMS_PER_PAGE = 10
+
+    const totalPages = data ? Math.ceil(data.length / ITEMS_PER_PAGE) : 0
+    const paginatedData = data?.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+    )
+
     if (!active) return <TabsContent value={type} />
 
     return (
@@ -79,18 +89,38 @@ function LeaderboardList({ type, active }: { type: string, active: boolean }) {
                     <p className="text-muted-foreground text-sm">Please try again later</p>
                 </div>
             ) : (
-                <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-                    {Array.isArray(data) && data.map((user, index) => (
-                        <div key={user.username} className="flex items-center gap-4 p-4 border-b border-border last:border-0 hover:bg-muted/50 transition-colors">
-                            <div className="font-mono text-xl font-bold text-muted-foreground w-8 text-center">
-                                {index + 1}
+        <div className="space-y-4">
+            <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+                {Array.isArray(paginatedData) && paginatedData.map((user, index) => {
+                    const rank = (currentPage - 1) * ITEMS_PER_PAGE + index + 1
+                    return (
+                        <div key={user.username} className={`flex items-center gap-4 p-4 border-b border-border last:border-0 hover:bg-muted/50 transition-colors ${rank <= 3 ? 'bg-muted/30' : ''}`}>
+                            <div className="flex items-center justify-center w-8">
+                                {rank === 1 ? (
+                                    <Trophy className="h-6 w-6 text-yellow-500" />
+                                ) : rank === 2 ? (
+                                    <Medal className="h-5 w-5 text-slate-400" />
+                                ) : rank === 3 ? (
+                                    <Medal className="h-5 w-5 text-amber-600" />
+                                ) : (
+                                    <span className="font-mono text-lg font-bold text-muted-foreground">
+                                        {rank}
+                                    </span>
+                                )}
                             </div>
-                            <Avatar className="h-10 w-10 border border-border">
+                            <Avatar className={`h-10 w-10 border-2 ${
+                                rank === 1 ? 'border-yellow-500/50' : 
+                                rank === 2 ? 'border-slate-400/50' : 
+                                rank === 3 ? 'border-amber-600/50' : 'border-border'
+                            }`}>
                                 <AvatarImage src={user.avatarUrl} alt={user.username} />
                                 <AvatarFallback>{user.username.slice(0, 2)}</AvatarFallback>
                             </Avatar>
                             <div className="flex-1 min-w-0">
-                                <div className="font-semibold truncate">{user.username}</div>
+                                <div className="font-semibold truncate flex items-center gap-2">
+                                    {user.username}
+                                    {rank === 1 && <span className="text-[10px] bg-yellow-500/10 text-yellow-600 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">King</span>}
+                                </div>
                                 <div className="text-xs text-muted-foreground">
                                     {user.mode === "PRIVATE" 
                                         ? "Verified Private" 
@@ -100,9 +130,9 @@ function LeaderboardList({ type, active }: { type: string, active: boolean }) {
                                 </div>
                             </div>
                             <div className="text-right">
-                                <div className="font-bold text-lg text-primary">
+                                <div className={`font-bold text-lg ${rank <= 3 ? 'text-primary' : 'text-primary/80'}`}>
                                     {type === "lifetime" ? (
-                                        `₦${(user.hustleScore * 2500).toLocaleString()}` // Approx display
+                                        `₦${(user.hustleScore * 2500).toLocaleString()}`
                                     ) : (
                                         `+${user.change?.toLocaleString()}`
                                     )}
@@ -114,13 +144,41 @@ function LeaderboardList({ type, active }: { type: string, active: boolean }) {
                                 )}
                             </div>
                         </div>
-                    ))}
-                    {data?.length === 0 && (
-                        <div className="p-8 text-center text-muted-foreground">
-                            No data yet. Be the first!
-                        </div>
-                    )}
+                    )
+                })}
+                {data?.length === 0 && (
+                    <div className="p-8 text-center text-muted-foreground">
+                        No data yet. Be the first!
+                    </div>
+                )}
+            </div>
+
+            {data && data.length > ITEMS_PER_PAGE && (
+                <div className="flex items-center justify-center gap-2 pt-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        disabled={currentPage === 1}
+                        className="h-8 w-8 p-0"
+                    >
+                        <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <div className="text-xs font-medium text-muted-foreground px-2">
+                        Page {currentPage} of {totalPages}
+                    </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        disabled={currentPage === totalPages}
+                        className="h-8 w-8 p-0"
+                    >
+                        <ChevronRight className="h-4 w-4" />
+                    </Button>
                 </div>
+            )}
+        </div>
             )}
         </TabsContent>
     )
