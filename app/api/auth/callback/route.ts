@@ -48,8 +48,9 @@ export async function GET(request: Request) {
     console.log(`Syncing user to DB: ${username} (GitHub ID: ${githubId}, Mode: ${mode})`)
     
     await prisma.user.upsert({
-      where: { id: user.id },
+      where: { githubId: githubId },
       update: {
+        id: user.id, // Update to current Supabase ID if it changed
         username,
         avatarUrl,
         name,

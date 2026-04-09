@@ -29,18 +29,20 @@ export function LeaderboardSection() {
 
                 <div className="max-w-3xl mx-auto">
                     <Tabs defaultValue="lifetime" onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="grid w-full grid-cols-3 mb-8">
-                            <TabsTrigger value="lifetime" className="gap-2">
-                                <Trophy className="h-4 w-4" />
-                                Lifetime
+                        <TabsList className="grid w-full grid-cols-3 mb-8 h-auto">
+                            <TabsTrigger value="lifetime" className="gap-1 sm:gap-2 py-3 px-1 sm:px-2">
+                                <Trophy className="h-4 w-4 shrink-0" />
+                                <span className="text-[10px] xs:text-xs sm:text-sm">Lifetime</span>
                             </TabsTrigger>
-                            <TabsTrigger value="weekly" className="gap-2">
-                                <TrendingUp className="h-4 w-4" />
-                                Weekly Growth
+                            <TabsTrigger value="weekly" className="gap-1 sm:gap-2 py-3 px-1 sm:px-2">
+                                <TrendingUp className="h-4 w-4 shrink-0" />
+                                <span className="text-[10px] xs:text-xs sm:text-sm hidden sm:inline">Weekly Growth</span>
+                                <span className="text-[10px] xs:text-xs sm:hidden">Weekly</span>
                             </TabsTrigger>
-                            <TabsTrigger value="monthly" className="gap-2">
-                                <Calendar className="h-4 w-4" />
-                                Monthly Growth
+                            <TabsTrigger value="monthly" className="gap-1 sm:gap-2 py-3 px-1 sm:px-2">
+                                <Calendar className="h-4 w-4 shrink-0" />
+                                <span className="text-[10px] xs:text-xs sm:text-sm hidden sm:inline">Monthly Growth</span>
+                                <span className="text-[10px] xs:text-xs sm:hidden">Monthly</span>
                             </TabsTrigger>
                         </TabsList>
 
