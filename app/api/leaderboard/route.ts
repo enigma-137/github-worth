@@ -122,8 +122,16 @@ export async function GET(request: Request) {
     
     return NextResponse.json(ranked)
 
-  } catch (error) {
-    console.error("Leaderboard Error:", error)
-    return NextResponse.json({ error: "Failed to fetch leaderboard" }, { status: 500 })
+  } catch (error: any) {
+    console.error("Leaderboard Error Detailed:", {
+      message: error.message,
+      code: error.code,
+      meta: error.meta,
+      stack: error.stack
+    })
+    return NextResponse.json({ 
+      error: "Failed to fetch leaderboard",
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined 
+    }, { status: 500 })
   }
 }
