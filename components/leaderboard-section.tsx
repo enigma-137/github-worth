@@ -102,7 +102,9 @@ function LeaderboardList({ type, active, currency }: { type: string, active: boo
     const filteredData = Array.isArray(data) ? data
         .filter(user => {
             const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase())
-            const matchesFilter = filterMode === "ALL" || user.mode === filterMode
+            const matchesFilter = filterMode === "ALL" || 
+                                  user.mode === filterMode || 
+                                  (filterMode === "GUEST" && user.mode === "PUBLIC")
             return matchesSearch && matchesFilter
         })
         .map((user, index) => ({ ...user, rank: index + 1 })) : []
@@ -175,9 +177,8 @@ function LeaderboardList({ type, active, currency }: { type: string, active: boo
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="PRIVATE">Private Verified</SelectItem>
-                        <SelectItem value="PUBLIC">Public Profiles</SelectItem>
+                        <SelectItem value="GUEST">Public Profiles</SelectItem>
                         <SelectItem value="ALL">All Categories</SelectItem>
-                        <SelectItem value="GUEST">Guest Searches</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
@@ -222,9 +223,7 @@ function LeaderboardList({ type, active, currency }: { type: string, active: boo
                                 <div className="text-xs text-muted-foreground">
                                     {user.mode === "PRIVATE" 
                                         ? "Verified Private" 
-                                        : user.mode === "GUEST" 
-                                            ? "Guest Search" 
-                                            : "Public Profile"}
+                                        : "Public Profile"}
                                 </div>
                             </div>
                              <div className="text-right">
