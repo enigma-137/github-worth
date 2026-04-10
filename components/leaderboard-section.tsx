@@ -95,17 +95,17 @@ function LeaderboardList({ type, active, currency }: { type: string, active: boo
     )
 
     const [searchTerm, setSearchTerm] = useState("")
-    const [filterMode, setFilterMode] = useState<string>("ALL")
+    const [filterMode, setFilterMode] = useState<string>("PRIVATE")
     const [currentPage, setCurrentPage] = useState(1)
 
     // Filter and compute original ranks
     const filteredData = Array.isArray(data) ? data
-        .map((user, index) => ({ ...user, originalRank: index + 1 }))
         .filter(user => {
             const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase())
             const matchesFilter = filterMode === "ALL" || user.mode === filterMode
             return matchesSearch && matchesFilter
-        }) : []
+        })
+        .map((user, index) => ({ ...user, rank: index + 1 })) : []
 
     const ITEMS_PER_PAGE = 10
     const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE)
@@ -127,7 +127,7 @@ function LeaderboardList({ type, active, currency }: { type: string, active: boo
 
     const clearFilters = () => {
         setSearchTerm("")
-        setFilterMode("ALL")
+        setFilterMode("PRIVATE")
         setCurrentPage(1)
     }
 
@@ -174,17 +174,17 @@ function LeaderboardList({ type, active, currency }: { type: string, active: boo
                         </div>
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="ALL">All Categories</SelectItem>
-                        <SelectItem value="PUBLIC">Public Profiles</SelectItem>
                         <SelectItem value="PRIVATE">Private Verified</SelectItem>
+                        <SelectItem value="PUBLIC">Public Profiles</SelectItem>
+                        <SelectItem value="ALL">All Categories</SelectItem>
                         <SelectItem value="GUEST">Guest Searches</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
 
             <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-                {Array.isArray(paginatedData) && paginatedData.map((user, index) => {
-                    const rank = user.originalRank
+                {Array.isArray(paginatedData) && paginatedData.map((user) => {
+                    const rank = user.rank
                     return (
                         <a 
                             key={user.username} 
