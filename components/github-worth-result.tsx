@@ -18,7 +18,8 @@ import {
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { formatNaira, type GitHubWorthResult } from "@/lib/github-scoring"
+import { formatNaira, formatUSD, type GitHubWorthResult } from "@/lib/github-scoring"
+import { DollarSign, Coins } from "lucide-react"
 
 interface GitHubWorthResultProps {
   result: GitHubWorthResult
@@ -26,9 +27,12 @@ interface GitHubWorthResultProps {
 
 export function GitHubWorthResultCard({ result }: GitHubWorthResultProps) {
   const [copied, setCopied] = useState(false)
+  const [currency, setCurrency] = useState<"NGN" | "USD">("NGN")
+
+  const currentWorth = currency === "NGN" ? formatNaira(result.nairaValue) : formatUSD(result.nairaValue)
 
   const handleShare = async () => {
-    const shareText = `My GitHub is worth ${formatNaira(result.nairaValue)}! ${result.affordabilityTier.emoji} ${result.affordabilityTier.label}\n\nCheck yours at:`
+    const shareText = `My GitHub is worth ${currentWorth}! ${result.affordabilityTier.emoji} ${result.affordabilityTier.label}\n\nCheck yours at:`
     const shareUrl = typeof window !== "undefined" ? window.location.origin : ""
 
     if (navigator.share) {
@@ -85,6 +89,19 @@ export function GitHubWorthResultCard({ result }: GitHubWorthResultProps) {
                 View Profile <ExternalLink className="h-3 w-3" />
               </a>
             </div>
+            <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setCurrency(prev => prev === "NGN" ? "USD" : "NGN")}
+                className="rounded-full gap-2 border-primary/20 bg-card hover:bg-primary/5 h-8 px-3"
+            >
+                {currency === "NGN" ? (
+                    <DollarSign className="h-4 w-4 text-green-600" />
+                ) : (
+                    <Coins className="h-4 w-4 text-amber-600" />
+                )}
+                <span className="hidden sm:inline">{currency === "NGN" ? "USD" : "NGN"}</span>
+            </Button>
           </div>
 
           {/* Worth Display */}
@@ -93,7 +110,7 @@ export function GitHubWorthResultCard({ result }: GitHubWorthResultProps) {
               Your GitHub is Worth
             </p>
             <p className="text-5xl md:text-6xl font-bold text-primary mb-2 font-mono">
-              {formatNaira(result.nairaValue)}
+              {currentWorth}
             </p>
             <Badge
               variant="secondary"

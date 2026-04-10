@@ -251,6 +251,8 @@ export function calculateHustleScore(
   return { score: totalScore, breakdown }
 }
 
+export const NAIRA_TO_DOLLAR = 1300
+
 export function scoreToNaira(score: number): number {
   // Inflation update: multiplier increased
   const rawValue = score * 2500 
@@ -281,4 +283,13 @@ export function formatNaira(value: number): string {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(value)
+}
+
+export function formatUSD(value: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value / NAIRA_TO_DOLLAR)
 }

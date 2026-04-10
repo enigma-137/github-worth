@@ -4,7 +4,7 @@ import { useState } from "react"
 import useSWR from "swr"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { TrendingUp, Trophy, Calendar, Medal, ChevronLeft, ChevronRight, Search, Filter, X } from "lucide-react"
+import { TrendingUp, Trophy, Calendar, Medal, ChevronLeft, ChevronRight, Search, Filter, X, DollarSign, Coins } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { 
@@ -14,6 +14,7 @@ import {
     SelectTrigger, 
     SelectValue 
 } from "@/components/ui/select"
+import { formatNaira, formatUSD } from "@/lib/github-scoring"
 
 type LeaderboardEntry = {
     username: string
@@ -27,13 +28,34 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 export function LeaderboardSection() {
     const [activeTab, setActiveTab] = useState("lifetime")
+    const [currency, setCurrency] = useState<"NGN" | "USD">("NGN")
 
     return (
         <section className="py-16 bg-muted/20">
             <div className="container mx-auto px-4">
-                <div className="text-center mb-10">
-                    <h2 className="text-3xl font-bold mb-4">Top Hustlers</h2>
-                    <p className="text-muted-foreground">See who's shipping the most</p>
+                <div className="flex flex-col md:flex-row items-center justify-between mb-10 gap-4">
+                    <div className="text-center md:text-left">
+                        <h2 className="text-3xl font-bold mb-2">Top Hustlers</h2>
+                        <p className="text-muted-foreground text-sm">See who's shipping the most</p>
+                    </div>
+                    <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => setCurrency(prev => prev === "NGN" ? "USD" : "NGN")}
+                        className="rounded-full gap-2 border-primary/20 hover:bg-primary/5 transition-all"
+                    >
+                        {currency === "NGN" ? (
+                            <>
+                                <DollarSign className="h-4 w-4 text-green-600" />
+                                <span>See in Dollars</span>
+                            </>
+                        ) : (
+                            <>
+                                <Coins className="h-4 w-4 text-amber-600" />
+                                <span>See in Naira</span>
+                            </>
+                        )}
+                    </Button>
                 </div>
 
                 <div className="max-w-3xl mx-auto">
@@ -54,10 +76,10 @@ export function LeaderboardSection() {
                                 <span className="text-[10px] xs:text-xs sm:hidden">Monthly</span>
                             </TabsTrigger>
                         </TabsList>
-
-                        <LeaderboardList type="lifetime" active={activeTab === "lifetime"} />
-                        <LeaderboardList type="weekly" active={activeTab === "weekly"} />
-                        <LeaderboardList type="monthly" active={activeTab === "monthly"} />
+                        
+                        <LeaderboardList type="lifetime" active={activeTab === "lifetime"} currency={currency} />
+                        <LeaderboardList type="weekly" active={activeTab === "weekly"} currency={currency} />
+                        <LeaderboardList type="monthly" active={activeTab === "monthly"} currency={currency} />
                     </Tabs>
                 </div>
             </div>
@@ -65,7 +87,7 @@ export function LeaderboardSection() {
     )
 }
 
-function LeaderboardList({ type, active }: { type: string, active: boolean }) {
+function LeaderboardList({ type, active, currency }: { type: string, active: boolean, currency: "NGN" | "USD" }) {
 
     const { data, isLoading, error } = useSWR<LeaderboardEntry[]>(
         active ? `/api/leaderboard?type=${type}` : null,
@@ -205,10 +227,12 @@ function LeaderboardList({ type, active }: { type: string, active: boolean }) {
                                             : "Public Profile"}
                                 </div>
                             </div>
-                            <div className="text-right">
+                             <div className="text-right">
                                 <div className={`font-bold text-lg ${rank <= 3 ? 'text-primary' : 'text-primary/80'}`}>
                                     {type === "lifetime" ? (
-                                        `₦${(user.hustleScore * 2500).toLocaleString()}`
+                                        currency === "NGN" 
+                                            ? formatNaira(user.hustleScore * 2500) 
+                                            : formatUSD(user.hustleScore * 2500)
                                     ) : (
                                         `+${user.change?.toLocaleString()}`
                                     )}
