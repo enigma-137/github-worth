@@ -97,7 +97,7 @@ function HomeContent() {
         <div className="relative container mx-auto px-4 py-12 md:py-20">
           <header className="text-center mb-12">
             <div className="inline-flex items-center justify-center gap-3 mb-6">
-              <div className="bg-primary/10 p-3 rounded-2xl">
+              <div className="p-3 rounded-2xl">
                 <Github className="h-10 w-10 text-primary" />
               </div>
             </div>

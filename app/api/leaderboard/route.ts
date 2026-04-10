@@ -11,7 +11,6 @@ export async function GET(request: Request) {
     if (type === "lifetime") {
       const authenticatedUsers = await prisma.user.findMany({
         orderBy: { hustleScore: 'desc' },
-        take: 50,
         select: {
           username: true,
           avatarUrl: true,
@@ -22,7 +21,6 @@ export async function GET(request: Request) {
 
       const guestUsers = await prisma.guestScore.findMany({
         orderBy: { hustleScore: 'desc' },
-        take: 50,
         select: {
           username: true,
           avatarUrl: true,
@@ -46,7 +44,6 @@ export async function GET(request: Request) {
         new Map(combined.map((u: any) => [u.username.toLowerCase(), u])).values()
       )
       .sort((a: any, b: any) => b.hustleScore - a.hustleScore)
-      .slice(0, 50)
       
       return NextResponse.json(ranked)
     } 
@@ -81,7 +78,7 @@ export async function GET(request: Request) {
         }
       }, 
       // We can't sort by computed field in DB easily with Prisma+Mongo here
-      take: 1000 // Limit to 1000 candidates for memory safety
+      take: 2000 // Increased limit for candidate pool
     })
     
     const ranked = users.map((user: any) => {
@@ -117,7 +114,6 @@ export async function GET(request: Request) {
     })
     .filter((u: any): u is NonNullable<typeof u> => u !== null && u.change > 0)
     .sort((a: any, b: any) => b.change - a.change)
-    .slice(0, 50)
     
     return NextResponse.json(ranked)
 
