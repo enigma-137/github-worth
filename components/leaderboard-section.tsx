@@ -4,8 +4,16 @@ import { useState } from "react"
 import useSWR from "swr"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { TrendingUp, Trophy, Calendar, Medal, ChevronLeft, ChevronRight } from "lucide-react"
+import { TrendingUp, Trophy, Calendar, Medal, ChevronLeft, ChevronRight, Search, Filter, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { 
+    Select, 
+    SelectContent, 
+    SelectItem, 
+    SelectTrigger, 
+    SelectValue 
+} from "@/components/ui/select"
 
 type LeaderboardEntry = {
     username: string
@@ -64,14 +72,42 @@ function LeaderboardList({ type, active }: { type: string, active: boolean }) {
         fetcher
     )
 
+    const [searchTerm, setSearchTerm] = useState("")
+    const [filterMode, setFilterMode] = useState<string>("ALL")
     const [currentPage, setCurrentPage] = useState(1)
-    const ITEMS_PER_PAGE = 10
 
-    const totalPages = Array.isArray(data) ? Math.ceil(data.length / ITEMS_PER_PAGE) : 0
-    const paginatedData = Array.isArray(data) ? data.slice(
+    // Filter and compute original ranks
+    const filteredData = Array.isArray(data) ? data
+        .map((user, index) => ({ ...user, originalRank: index + 1 }))
+        .filter(user => {
+            const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase())
+            const matchesFilter = filterMode === "ALL" || user.mode === filterMode
+            return matchesSearch && matchesFilter
+        }) : []
+
+    const ITEMS_PER_PAGE = 10
+    const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE)
+    const paginatedData = filteredData.slice(
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
-    ) : []
+    )
+
+    // Reset page when filtering/searching
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value)
+        setCurrentPage(1)
+    }
+
+    const handleFilter = (value: string) => {
+        setFilterMode(value)
+        setCurrentPage(1)
+    }
+
+    const clearFilters = () => {
+        setSearchTerm("")
+        setFilterMode("ALL")
+        setCurrentPage(1)
+    }
 
     if (!active) return <TabsContent value={type} />
 
@@ -89,10 +125,44 @@ function LeaderboardList({ type, active }: { type: string, active: boolean }) {
                     <p className="text-muted-foreground text-sm">Please try again later</p>
                 </div>
             ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input 
+                        placeholder="Search username..." 
+                        className="pl-9 bg-card/50"
+                        value={searchTerm}
+                        onChange={handleSearch}
+                    />
+                    {searchTerm && (
+                        <button 
+                            onClick={() => { setSearchTerm(""); setCurrentPage(1); }}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
+                    )}
+                </div>
+                <Select value={filterMode} onValueChange={handleFilter}>
+                    <SelectTrigger className="w-full sm:w-[180px] bg-card/50">
+                        <div className="flex items-center gap-2">
+                            <Filter className="h-4 w-4" />
+                            <SelectValue placeholder="All Categories" />
+                        </div>
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="ALL">All Categories</SelectItem>
+                        <SelectItem value="PUBLIC">Public Profiles</SelectItem>
+                        <SelectItem value="PRIVATE">Private Verified</SelectItem>
+                        <SelectItem value="GUEST">Guest Searches</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+
             <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
                 {Array.isArray(paginatedData) && paginatedData.map((user, index) => {
-                    const rank = (currentPage - 1) * ITEMS_PER_PAGE + index + 1
+                    const rank = user.originalRank
                     return (
                         <a 
                             key={user.username} 
@@ -152,14 +222,23 @@ function LeaderboardList({ type, active }: { type: string, active: boolean }) {
                         </a>
                     )
                 })}
-                {data?.length === 0 && (
-                    <div className="p-8 text-center text-muted-foreground">
-                        No data yet. Be the first!
+                {filteredData.length === 0 && (
+                    <div className="p-12 text-center text-muted-foreground">
+                        <div className="mb-4 flex justify-center">
+                            <div className="bg-muted p-4 rounded-full">
+                                <Search className="h-8 w-8 opacity-20" />
+                            </div>
+                        </div>
+                        <p className="font-medium text-foreground">No matches found</p>
+                        <p className="text-sm mt-1 mb-6">Try adjusting your filters or search term</p>
+                        <Button variant="outline" size="sm" onClick={clearFilters}>
+                            Clear all filters
+                        </Button>
                     </div>
                 )}
             </div>
 
-            {data && data.length > ITEMS_PER_PAGE && (
+            {filteredData.length > ITEMS_PER_PAGE && (
                 <div className="flex items-center justify-center gap-2 pt-2">
                     <Button
                         variant="outline"
