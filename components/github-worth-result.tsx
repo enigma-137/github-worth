@@ -29,7 +29,10 @@ export function GitHubWorthResultCard({ result }: GitHubWorthResultProps) {
   const [copied, setCopied] = useState(false)
   const [currency, setCurrency] = useState<"NGN" | "USD">("NGN")
 
-  const currentWorth = currency === "NGN" ? formatNaira(result.nairaValue) : formatUSD(result.nairaValue)
+  const isVeryLarge = result.nairaValue >= 1000000000
+  const currentWorth = currency === "NGN" 
+    ? formatNaira(result.nairaValue, isVeryLarge) 
+    : formatUSD(result.nairaValue, isVeryLarge)
 
   const handleShare = async () => {
     const shareText = `My GitHub is worth ${currentWorth}! ${result.affordabilityTier.emoji} ${result.affordabilityTier.label}\n\nCheck yours at:`
@@ -109,7 +112,7 @@ export function GitHubWorthResultCard({ result }: GitHubWorthResultProps) {
             <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">
               Your GitHub is Worth
             </p>
-            <p className="text-5xl md:text-6xl font-bold text-primary mb-2 font-mono">
+            <p className="text-3xl sm:text-5xl md:text-6xl font-bold text-primary mb-2 font-mono break-all sm:break-normal">
               {currentWorth}
             </p>
             <Badge

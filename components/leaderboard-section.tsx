@@ -227,11 +227,11 @@ function LeaderboardList({ type, active, currency }: { type: string, active: boo
                                 </div>
                             </div>
                              <div className="text-right">
-                                <div className={`font-bold text-lg ${rank <= 3 ? 'text-primary' : 'text-primary/80'}`}>
+                                <div className={`font-bold text-sm sm:text-lg ${rank <= 3 ? 'text-primary' : 'text-primary/80'}`}>
                                     {type === "lifetime" ? (
                                         currency === "NGN" 
-                                            ? formatNaira(user.hustleScore * 2500) 
-                                            : formatUSD(user.hustleScore * 2500)
+                                            ? formatNaira(user.hustleScore * 2500, true) 
+                                            : formatUSD(user.hustleScore * 2500, true)
                                     ) : (
                                         `+${user.change?.toLocaleString()}`
                                     )}

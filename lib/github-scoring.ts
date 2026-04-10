@@ -276,20 +276,22 @@ export function getMessage(score: number): string {
   return MOTIVATIONAL_MESSAGES[Math.floor(Math.random() * MOTIVATIONAL_MESSAGES.length)]
 }
 
-export function formatNaira(value: number): string {
+export function formatNaira(value: number, compact = false): string {
   return new Intl.NumberFormat("en-NG", {
     style: "currency",
     currency: "NGN",
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    maximumFractionDigits: compact ? 1 : 0,
+    notation: compact ? "compact" : "standard",
   }).format(value)
 }
 
-export function formatUSD(value: number): string {
+export function formatUSD(value: number, compact = false): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    maximumFractionDigits: compact ? 1 : 0,
+    notation: compact ? "compact" : "standard",
   }).format(value / NAIRA_TO_DOLLAR)
 }
