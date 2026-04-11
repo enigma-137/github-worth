@@ -63,11 +63,11 @@ function HomeContent() {
   return (
     <main className="min-h-screen bg-background">
 
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Github className="h-6 w-6 text-primary" />
-            <span className="font-bold text-foreground">Naira Worth</span>
+            <span className="font-bold text-foreground">Github Worth</span>
           </div>
           <div className="flex items-center gap-4">
             {userData && (
@@ -129,7 +129,6 @@ function HomeContent() {
             )}
           </header>
 
-          {/* Global Auth Error Display */}
           {authError && (
             <div className="max-w-md mx-auto mb-8 animate-in fade-in slide-in-from-top-4">
               <Alert variant="destructive">
