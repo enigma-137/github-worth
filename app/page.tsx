@@ -50,7 +50,7 @@ function HomeContent() {
   // Use either search data or user data (if not searching)
   const displayData = searchedUsername ? searchData : userData
   const isLoading = searchedUsername ? searchLoading : userLoading
-  const error = searchedUsername ? searchError : null // Don't show userError (401) as specific error, just means not logged in
+  const error = searchedUsername ? searchError : null
 
   const handleSearch = (username: string) => {
     setSearchedUsername(username)
