@@ -34,7 +34,7 @@ function HomeContent() {
     fetcher,
     {
       shouldRetryOnError: false,
-      revalidateOnFocus: false, // Don't revalidate too aggressively
+      revalidateOnFocus: false,
     }
   )
 
